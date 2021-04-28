@@ -7,7 +7,7 @@ def initializationFunction(training_dataset, val_dataset):
     hyperparameters = {"epochs", "batch_size"}
     hyperparameters["epochs"] = 20
     hyperparameters["batch_size"] = 10
-    n_eval = .001
+    n_eval = 100
 
     summary_path = "./log"
 
