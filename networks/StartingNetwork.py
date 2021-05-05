@@ -1,5 +1,8 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+import torchvision
+import matplotlib.pyplot as plt
 
 #600x800
 
@@ -34,7 +37,7 @@ class StartingNetwork(torch.nn.Module):
 
  
 
- class CNN(nn.module):
+class CNN(nn.Module):
     """
     Basic CNN to pass the data through
     """
@@ -53,12 +56,10 @@ class StartingNetwork(torch.nn.Module):
         self.conv2 = nn.Conv2d (6, 16, 5)
 
         #16 channels, not sure about 4x4
-        self.fc = FCNetwork(16 * 4 * 4, output_dim)
+        self.fc = StartingNetwork(463344, output_dim)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = torch.reshape(x, (-1, 5 * 5 * 5))
-        x = self.fc(x)
+        x = self.fc.forward(x)
         return x
-
