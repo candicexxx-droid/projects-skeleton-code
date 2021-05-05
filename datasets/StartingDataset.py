@@ -5,7 +5,7 @@ import PIL
 from PIL import Image as Image
 from os import listdir
 import sys
-sys.path.insert(1, '/Users/vinayshukla/Desktop/cassav-project/projects-skeleton-code/train_functions')
+sys.path.insert(1, '/content/projects-skeleton-code/train_functions')
 from starting_train import initializationFunction
 
 
@@ -20,7 +20,7 @@ class StatementDataset(torch.utils.data.Dataset):#inherit from torch.utils.data.
         return len(self.statements)
     def __getitem__(self, index):  #retrieve items from our dataset 
         #path needs to be changed 
-        path ='/Users/vinayshukla/Downloads/cassava-leaf-disease-classification/train_images/'
+        path ='/content/train_images/'
         trans1 = transforms.ToTensor()        
         statement = Image.open(path+self.statements[index]) #read specific image
         statement = trans1(statement)
@@ -30,7 +30,7 @@ class StatementDataset(torch.utils.data.Dataset):#inherit from torch.utils.data.
 
 def StartingDataset():
     #change the path
-    image_info = pd.read_csv((r'/Users/vinayshukla/Downloads/cassava-leaf-disease-classification/train.csv'))
+    image_info = pd.read_csv((r'/content/train.csv'))
     image_dataset = StatementDataset(image_info.image_id,image_info.label)
     test_size = 1000
     valid_size = 1000
