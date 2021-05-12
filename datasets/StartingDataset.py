@@ -47,6 +47,6 @@ def StartingDataset():
     train_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size, train_rest_size])
     train_test_loader = torch.utils.data.DataLoader(train_test, batch_size=16, shuffle=True)
 
-    return train_test_loader
+    return train_loader, valid_loader, test_loader
 
-initializationFunction(StartingDataset(), None)
+#initializationFunction(StartingDataset(), None)
