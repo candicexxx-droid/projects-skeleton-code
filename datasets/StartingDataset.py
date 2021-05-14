@@ -43,10 +43,15 @@ def StartingDataset():
 
     #data for initial model testing 
     train_test_size = 100
-    train_rest_size = len(train_dataset) - 100
-    train_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size, train_rest_size])
+    valid_test_size = 20
+    test_test_size = 20 
+    #size of the rest of the data in the training set
+    train_rest_size = len(train_dataset) - 100 - 20 - 20  
+    train_test, valid_test,test_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size,valid_test_size, test_test_size, train_rest_size])
     train_test_loader = torch.utils.data.DataLoader(train_test, batch_size=16, shuffle=True)
+    valid_test_loader = torch.utils.data.DataLoader(valid_test, batch_size=16, shuffle=True)
+    test_test_loader = torch.utils.data.DataLoader(test_test, batch_size=16, shuffle=True)
 
-    return train_loader, valid_loader, test_loader
+    return train_test_loader, valid_loader, test_loader #fix the validation set for evaluation 
 
 #initializationFunction(StartingDataset(), None)
