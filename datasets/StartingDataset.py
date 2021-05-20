@@ -42,11 +42,11 @@ def StartingDataset():
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=16, shuffle=True)
 
     #data for initial model testing 
-    train_test_size = 100
+    train_test_size = 3000
     valid_test_size = 20
     test_test_size = 20 
     #size of the rest of the data in the training set
-    train_rest_size = len(train_dataset) - 100 - 20 - 20  
+    train_rest_size = len(train_dataset) - train_test_size - valid_test_size - test_test_size  
     train_test, valid_test,test_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size,valid_test_size, test_test_size, train_rest_size])
     train_test_loader = torch.utils.data.DataLoader(train_test, batch_size=16, shuffle=True)
     valid_test_loader = torch.utils.data.DataLoader(valid_test, batch_size=16, shuffle=True)

@@ -1,4 +1,5 @@
 import argparse
+
 import os
 
 #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
@@ -8,6 +9,7 @@ from datasets.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
 
+os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
 
 SUMMARIES_PATH = "training_summaries"
 
