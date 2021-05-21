@@ -35,7 +35,7 @@ def StartingDataset():
     test_size = 1000
     valid_size = 1000
     train_size = len(image_dataset) - 2000
-    train_dataset, test_dataset, valid_dataset = torch.utils.data.random_split(image_dataset, [train_size, test_size, valid_size])
+    train_dataset, test_dataset, valid_dataset = torch.utils.data.random_split(image_dataset, [train_size, test_size, valid_size], generator=torch.Generator().manual_seed(42))
 
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=True)
@@ -47,7 +47,7 @@ def StartingDataset():
     test_test_size = 20 
     #size of the rest of the data in the training set
     train_rest_size = len(train_dataset) - train_test_size - valid_test_size - test_test_size  
-    train_test, valid_test,test_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size,valid_test_size, test_test_size, train_rest_size])
+    train_test, valid_test,test_test, train_rest = torch.utils.data.random_split(train_dataset, [train_test_size,valid_test_size, test_test_size, train_rest_size], generator=torch.Generator().manual_seed(42))
     train_test_loader = torch.utils.data.DataLoader(train_test, batch_size=16, shuffle=True)
     valid_test_loader = torch.utils.data.DataLoader(valid_test, batch_size=16, shuffle=True)
     test_test_loader = torch.utils.data.DataLoader(test_test, batch_size=16, shuffle=True)
