@@ -8,51 +8,50 @@ import constants
 from datasets.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
+from config import config
+# os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
 
-os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
-
-SUMMARIES_PATH = "training_summaries"
+# SUMMARIES_PATH = "training_summaries"
 
 
-def main():
+def main(config):
     # Get command line arguments
-    args = parse_arguments()
-    hyperparameters = {"epochs": args.epochs, "batch_size": args.batch_size}
+    # args = parse_arguments()
+    
 
     # Create path for training summaries
-    summary_path = None
-    if args.logdir is not None:
-        summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
-        os.makedirs(summary_path, exist_ok=True)
+    # summary_path = None
+    # if args.logdir is not None:
+    #     summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
+    #     os.makedirs(summary_path, exist_ok=True)
 
     # TODO: Add GPU support. This line of code might be helpful.
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    print("Summary path:", summary_path)
-    print("Epochs:", args.epochs)
-    print("Batch size:", args.batch_size)
+    # print("Summary path:", summary_path)
+    print("Epochs:", config['epochs'])
+    print("Batch size:", config['batch_size'])
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset()
-    val_dataset = StartingDataset()
+    train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
     model = StartingNetwork()
     starting_train(
-        train_dataset=train_dataset,
-        val_dataset=val_dataset,
-        model=model,
-        hyperparameters=hyperparameters,
-        n_eval=args.n_eval,
-        summary_path=summary_path,
+        train_loader=train_loader,
+        valid_loader=valid_loader,
+        network=model,
+        num_epochs=config['epochs'],
+        test = config['test']
     )
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--epochs", type=int, default=constants.EPOCHS)
-    parser.add_argument("--batch_size", type=int, default=constants.BATCH_SIZE)
-    parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
-    parser.add_argument("--logdir", type=str, default=None)
-    return parser.parse_args()
+# def parse_arguments():
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("epochs", type=int, default=constants.EPOCHS)
+#     parser.add_argument("batch_size", type=int, default=constants.BATCH_SIZE)
+#     parser.add_argument("test", type=bool, default=constants.TEST)
+#     # parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
+#     # parser.add_argument("--logdir", type=str, default=None)
+#     return parser.parse_args()
 
 
 if __name__ == "__main__":
