@@ -62,4 +62,4 @@ def StartingDataset():
 
     return train_test_loader, valid_loader, test_loader #fix the validation set for evaluation 
 
-#initializationFunction(StartingDataset(), None)
+
