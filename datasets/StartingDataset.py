@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, '/content/projects-skeleton-code/train_functions')
 from starting_train import initializationFunction
 
-##commit test
+
 
 ###Loading the dataset & Convert to Tensor
 class StatementDataset(torch.utils.data.Dataset):#inherit from torch.utils.data.Dataset to make our life easier in dealing with Data
