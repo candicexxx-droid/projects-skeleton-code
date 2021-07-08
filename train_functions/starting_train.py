@@ -1,147 +1,178 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.utils.tensorboard
-from torch.utils.tensorboard import SummaryWriter
-import sys
-sys.path.insert(1, '/content/projects-skeleton-code/networks')
-from StartingNetwork import CNN
+import wandb
+# from torch.utils.tensorboard import SummaryWriter
+# import sys
+# sys.path.insert(1, '/content/projects-skeleton-code/networks')
+# from StartingNetwork import CNN
 
-def initializationFunction(training_dataset, val_dataset):
-    hyperparameters = {'epochs': 20, 'batch_size': 16}
-    n_eval = 100
-
-    summary_path = "./log"
-
-    model = CNN(3, 5)
-
-    #Temporary
+#####contains:
+#find_acc
+#train
+#validate
 
 
-    starting_train(training_dataset, training_dataset, model, hyperparameters, n_eval, summary_path)
+def find_acc(pred, label): #calculate accuracy for each batch 
+    """pixelwise accuracy"""
+    correct = pred.argmax(dim = 1).eq(label)
+    accuracy = correct.to(torch.float32).mean().item() * 100 
+    correct_label=correct.to(torch.float32).sum()
+    #
+    return correct_label,accuracy
 
-
-
-def starting_train(
-    train_dataset, val_dataset, model , hyperparameters, n_eval, summary_path
-):
-    """
-    Trains and evaluates a model.
-    Args:
-        train_dataset:   PyTorch dataset containing training data.
-        val_dataset:     PyTorch dataset containing validation data.
-        model:           PyTorch model to be trained.
-        hyperparameters: Dictionary containing hyperparameters.
-        n_eval:          Interval at which we evaluate our model.
-        summary_path:    Path where Tensorboard summaries are located.
-    """
-
-    # Get keyword arguments
-    batch_size, epochs = hyperparameters["batch_size"], hyperparameters["epochs"]
-
-    # Initialize dataloaders
-    #train_loader = torch.utils.data.DataLoader(
-     #   train_dataset, batch_size=batch_size, shuffle=True
-    #)
-    val_loader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=batch_size, shuffle=True
-    )
-
-    # Initalize optimizer (for gradient descent) and loss function
-    optimizer = optim.Adam(model.parameters())
-    loss_fn = nn.CrossEntropyLoss()
-
-    # Initialize summary writer (for logging)
-    if summary_path is not None:
-        writer = torch.utils.tensorboard.SummaryWriter(summary_path)
-
-    step = 0
-    for epoch in range(epochs):
-        for batch in train_dataset:
-            images, labels = batch
-            print("Images: " , images.shape)
-
-            #images = images.to(device)
-            #labels = labels.to(device)
-
-            #probably need to reshape this is its not 784
-            #images = torch.reshape(images, (-1,23040000))
-            outputs = model.forward(images)
-            loss = loss_fn(outputs, labels)
-            loss.backward()
-            optimizer.step()
-            optimizer.zero_grad()
-            
-            # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
-                # TODO:
-                print("Here")
-                # Compute training loss and accuracy.
-                # Log the results to Tensorboard.
-                #evaluate(train_dataset, model, loss_fn)
-
-                # TODO:
-                # Compute validation loss and accuracy.
-                # Log the results to Tensorboard.
-                # Don't forget to turn off gradient calculations!
-                #evaluate(val_loader, model, loss_fn)
-
-            step += 1
-
-        print('Epoch:', epoch, 'Loss:', loss)
-
-    evaluate(train_dataset, model, loss_fn)
-
-def compute_accuracy(outputs, labels):
-    """
-    Computes the accuracy of a model's predictions.
-    Example input:
-        outputs: [0.7, 0.9, 0.3, 0.2]
-        labels:  [1, 1, 0, 1]
-    Example output:
-        0.75
-    """
-    n_correct = 0
-    total = 0
-    predictions = torch.argmax(outputs, dim=1)
-
-
-    n_correct += (predictions == labels).int().sum()
-    total += len(predictions)
+def train(network, epoch, criterion, optimizer, trainloader):
+    loss_train = 0
+    cor_train = 0
+    acc_train = 0
+    network.train()
+    #epoch_no=epoch_no
     
-    return (n_correct / total).item()
+    for step in range(len(trainloader)): #go thru each images in one epoch
 
+        images , labels = next(iter(trainloader))
+        #images , labels = images.to(device) , labels.to(device) 
+        #print("Images: " , images.shape)
+        #
+        # move the images and labels to GPU
+        images = images.to(device)
+        labels = labels.to(device)
+        
+        pred = network(images)
+        #print('pred_train shape: ', pred.shape)
+        
+        # clear all the gradients before calculating them
+        optimizer.zero_grad()
+        
+        # find the loss for the current step
+        loss_train_step = criterion(pred , labels)
+        
+        # find accuracy
+        cor_train_step, acc_train_step = find_acc(pred, labels) 
+        #cor_train_step: get the total number of labels being correctly predicted at each bath 
+        #acc_train_step: calculating accuracy for 16 image prediction 
+        #print('acc_train_step:', acc_train_step)
+        # calculate the gradients
+        loss_train_step.backward()
+        
+        # update the parameters
+        optimizer.step()
+        
+        loss_train += loss_train_step.item()
+        cor_train += cor_train_step  
+        acc_train += acc_train_step  
 
-def evaluate(loader, model, loss_fn):
-    """
-    Computes the loss and accuracy of a model on the validation dataset.
-    """
-    step = 0
+        if step % 5 ==0: #log the loss and accuracy every 5 steps
+          wandb.log({
+          #"Step {}".format(epoch_no):step,
+          "Train Loss": loss_train_step, #log the loss for each train step 
+          "Train Acc": cor_train/((step+1)*len(images)), #calculate the accuracy = number of correct labels so far/number of imges being passed into the model 
+          # "Valid Loss": loss_val,
+          # "Valid Acc": acc_valid
+          })
+          print('current acc:', cor_train/((step+1)*len(images)))
+            
+    loss_train /= (len(trainloader)) 
+        #number of images in each train loader * total train loader ??no
 
-    optimizer = optim.Adam(model.parameters())
-    writer = SummaryWriter(log_dir='./logs')
-    total = 0
-    epochs = 0
-    for epoch in range(loader.batch_size):
-        with torch.no_grad():
-            curr_batch = 0
-            for batch in loader:
-                images, labels = batch
-                
-                #images = images.to(device)
-                #labels = labels.to(device)
-                
-                output = model.forward(images)
-                accuracy = compute_accuracy(output, labels)
-                curr_batch += accuracy
-                loss = loss_fn(output, labels)
-                
-                
-                writer.add_scalar('train_loss', loss, global_step=step)
-                writer.add_scalar('accuracy', accuracy, global_step=step)
+        #not sure if here the length should be train loader(original was test loader)
+    acc_train /= (len(trainloader)) #calculates the avg accuracy over all batches in each epoch 
 
-                step += 1
-        total+=(curr_batch/loader.batch_size)
-        epochs+=1
-        print("Hi")
-    print("Calculated ", (total/epochs)*100)
+    return loss_train, acc_train  
+        
+def validate(network, epoch, criterion, testloader): 
+    loss_valid = 0
+    acc_valid = 0  
+    cor_valid = 0     
+    network.eval()  
+
+    for step in range(len(testloader)):
+
+        images , labels = next(iter(testloader))
+        
+        # move the images and labels to GPU
+        images = images.to(device)
+        labels = labels.to(device)
+        
+        pred = network(images)
+        
+        # clear all the gradients before calculating them
+        optimizer.zero_grad()
+        
+        # find the loss and acc for the current step
+        loss_valid_step = criterion(pred , labels)
+        cor_valid_step, acc_valid_step = find_acc(pred, labels)
+      
+        loss_valid += loss_valid_step.item()
+        cor_valid += cor_valid_step  
+        acc_valid += acc_valid_step
+
+        if step % 5 ==0: #log the loss and accuracy every 5 steps
+          wandb.log({
+          #"Step {}".format(epoch_no):step,
+          # "Train Loss": loss_train,
+          # "Train Acc": acc_train,
+          "Valid Loss": loss_valid,
+          "Valid Acc": cor_valid/((step+1)*len(images))})
+
+        #not sure if here the length should be testloader(original was trainloader)
+    loss_valid /= (len(testloader))
+    acc_valid /= (len(testloader))
+
+    return loss_valid, acc_valid
+
+def starting_train(train_loader, valid_loader, training_date, test, network, num_epochs = 100):
+  if test: 
+    trainset_size = 3000
+    
+  else: 
+    trainset_size = 'complete'
+    
+  wandb.init(name='ACM-Project_ResNet with batchnorm on Trainsize = {} ({})'.format(trainset_size, training_date), 
+            project='test_project',
+            #  notes='5th run', 
+            tags=['Cassava-Leaf', 'Test Run'],
+            entity='candicecai26')
+  
+  # WandB Configurations (optional)        
+  wandb.config.lr = 0.01    
+
+  #network = CNN().to(device) #model initialization 
+  criterion = nn.CrossEntropyLoss()
+  optimizer = optim.Adam(network.parameters(), wandb.config.lr)
+
+  wandb.watch(network) # Log the network weight histograms (optional)
+
+  num_epochs = 100
+  start_time = time.time()
+  for epoch in range(1, num_epochs+1):
+    
+    #helper function 1
+    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader)
+    
+    #Helper function 2
+    #do not evalulate the model per epoch 
+    #Evaluate and save every 3 epoch 
+    if epoch % 2 ==0: 
+      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader)
+      print('Epoch: {}  Train Loss: {:.4f}  Train Acc: {:.4f}  Valid Loss: {:.4f}  Valid Acc: {:.4f}'.format(epoch, loss_train, acc_train, loss_valid, acc_valid))
+      wandb.log({
+        "Epoch": epoch,
+        "Epoch Valid Loss": loss_valid,
+        "Epoch Valid Acc": acc_valid})
+      torch.save(network.state_dict(),'/content/drive/MyDrive/ACM AI/ResnetModel_{}（Epoch No.{}).pt'.format(training_date, epoch))
+    
+    print('Epoch: {}  Train Loss: {:.4f}  Train Acc: {:.4f} '.format(epoch, loss_train, acc_train))
+
+    # Log the loss and accuracy values at the end of each epoch
+    wandb.log({
+        "Epoch": epoch,
+        "Epoch Train Loss": loss_train,
+        "Epoch Train Acc": acc_train
+        # "Epoch Valid Loss": loss_valid,
+        # "Epoch Valid Acc": acc_valid
+        })
+    
+    training_time = time.time() - start_time
+    print("Time Elapsed : {:.4f}s".format(training_time))
+
