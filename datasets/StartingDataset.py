@@ -5,8 +5,8 @@ import PIL
 from PIL import Image as Image
 from os import listdir
 import sys
-sys.path.insert(1, '/content/projects-skeleton-code/train_functions')
-from starting_train import initializationFunction
+
+
 
 
 
@@ -44,7 +44,7 @@ def StartingDataset(batch_size, test=True):
     train_dataset, test_dataset, valid_dataset = torch.utils.data.random_split(image_dataset, [train_size, test_size, valid_size], generator=torch.Generator().manual_seed(42))
 
     
-)
+
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
     valid_loader = torch.utils.data.DataLoader(valid_dataset, batch_size=batch_size, shuffle=True)
