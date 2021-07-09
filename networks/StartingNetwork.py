@@ -38,7 +38,7 @@ class StartingNetwork(torch.nn.Module):
 
  
 
-class CNN(nn.Module): #changed to resnet
+class StartingNetwork(nn.Module): #changed to resnet
     """
     Basic CNN to pass the data through
     """
