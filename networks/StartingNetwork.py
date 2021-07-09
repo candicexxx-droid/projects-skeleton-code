@@ -74,7 +74,7 @@ class CNN(nn.Module): #changed to resnet
 
         # self.conv4 = nn.Conv2d(24, 48, 5)
         # self.pool4 = nn.MaxPool2d(2,2)
-
+        #commit test
         # #16 channels, not sure about 4x4
         self.modified_resnet.fc = StartingNetwork(512, output_dim=5)
 
