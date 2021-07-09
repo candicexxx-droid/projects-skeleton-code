@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import torchvision.models as models
 #600x800
 
-class StartingNetwork(torch.nn.Module):
+class fc(torch.nn.Module):
     """
     Basic logistic regression on 224x224x3 images.
     """
@@ -76,7 +76,7 @@ class StartingNetwork(nn.Module): #changed to resnet
         # self.pool4 = nn.MaxPool2d(2,2)
         #commit test
         # #16 channels, not sure about 4x4
-        self.modified_resnet.fc = StartingNetwork(512, output_dim=5)
+        self.modified_resnet.fc = fc(512, output_dim=5)
 
     def forward(self, x):
 
