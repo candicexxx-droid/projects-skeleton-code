@@ -1,0 +1,143 @@
+diff --git a/main.py b/main.py
+index edfbc3c..002bae9 100644
+--- a/main.py
++++ b/main.py
+@@ -1,7 +1,7 @@
+ import argparse
+ 
+ import os
+-
++import torch
+ #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
+ 
+ import constants
+@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
+ from train_functions.starting_train import starting_train
+ from config import config
+ # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
+-
++import importlib
+ # SUMMARIES_PATH = "training_summaries"
+-
++parser = argparse.ArgumentParser()
++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
++args = parser.parse_args()
++# get experiment config
++config_module = importlib.import_module(args.config_name)
++config = config_module.config
+ 
+ def main(config):
+     # Get command line arguments
+     # args = parse_arguments()
+-    
++    #commit test
+ 
+     # Create path for training summaries
+     # summary_path = None
+@@ -34,13 +39,14 @@ def main(config):
+ 
+     # Initalize dataset and model. Then train the model!
+     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
+-    model = StartingNetwork()
++    model = StartingNetwork().to(device)
+     starting_train(
+         train_loader=train_loader,
+         valid_loader=valid_loader,
+         network=model,
+         num_epochs=config['epochs'],
+-        test = config['test']
++        test = config['test'], 
++        training_date = config['train_date']
+     )
+ 
+ 
+@@ -55,4 +61,4 @@ def main(config):
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    main(config)
+diff --git a/networks/StartingNetwork.py b/networks/StartingNetwork.py
+index cb87187..28db092 100644
+--- a/networks/StartingNetwork.py
++++ b/networks/StartingNetwork.py
+@@ -3,10 +3,10 @@ import torch.nn as nn
+ import torch.nn.functional as F
+ import torchvision
+ import matplotlib.pyplot as plt
+-
++import torchvision.models as models
+ #600x800
+ 
+-class StartingNetwork(torch.nn.Module):
++class fc(torch.nn.Module):
+     """
+     Basic logistic regression on 224x224x3 images.
+     """
+@@ -32,20 +32,28 @@ class StartingNetwork(torch.nn.Module):
+         x = F.relu(x)
+ 
+         x = self.fc4(x)
++        x = F.softmax(x)
+ 
+         return x
+ 
+  
+ 
+-class CNN(nn.Module): #changed to resnet
++class StartingNetwork(nn.Module): #changed to resnet
+     """
+     Basic CNN to pass the data through
+     """
+     def __init__(self):
+         super().__init__()
+-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+-        self.resnet.eval() #//set on eval mode to freeze weights
++        self.modified_resnet = models.resnet18()
++        # Freeze model weights
++        for param in self.modified_resnet.parameters():
++            param.requires_grad = False
++        
++        print('pretrained weights fixed!')
++
++        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
++        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
++        # self.resnet.eval() #//set on eval mode to freeze weights
+ 
+         # #filter is 5, output channels is 6 (both can be changed)
+         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
+@@ -66,21 +74,21 @@ class CNN(nn.Module): #changed to resnet
+ 
+         # self.conv4 = nn.Conv2d(24, 48, 5)
+         # self.pool4 = nn.MaxPool2d(2,2)
+-
++        #commit test
+         # #16 channels, not sure about 4x4
+-        self.fc = StartingNetwork(512, output_dim=5)
++        self.modified_resnet.fc = fc(512, output_dim=5)
+ 
+     def forward(self, x):
+ 
+-        with torch.no_grad(): 
+-            x = self.resnet(x)#freeze the weight 
+-           #//use like normal but use no_grad
++        # with torch.no_grad(): 
++        #     x = self.resnet(x)#freeze the weight 
++        #    #//use like normal but use no_grad
+ 
+-        # x = self.pool(F.relu(self.conv1(x)))
+-        # x = self.pool2(F.relu(self.conv2(x)))
+-        # x = self.pool3(F.relu(self.conv3(x)))
+-        # x = self.pool4(F.relu(self.conv4(x)))
++        # # x = self.pool(F.relu(self.conv1(x)))
++        # # x = self.pool2(F.relu(self.conv2(x)))
++        # # x = self.pool3(F.relu(self.conv3(x)))
++        # # x = self.pool4(F.relu(self.conv4(x)))
+ 
+-        #keep the fc layers unchanged 
+-        x = self.fc.forward(x)
++        # #keep the fc layers unchanged 
++        x = self.modified_resnet(x)
+         return x
+\ No newline at end of file
