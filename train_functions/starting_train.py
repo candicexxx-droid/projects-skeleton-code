@@ -21,7 +21,7 @@ def find_acc(pred, label): #calculate accuracy for each batch
     #
     return correct_label,accuracy
 
-def train(network, epoch, criterion, optimizer, trainloader):
+def train(network, epoch, criterion, optimizer, trainloader, deivce):
     loss_train = 0
     cor_train = 0
     acc_train = 0
@@ -80,7 +80,7 @@ def train(network, epoch, criterion, optimizer, trainloader):
 
     return loss_train, acc_train  
         
-def validate(network, epoch, criterion, testloader): 
+def validate(network, epoch, criterion, testloader, deivce): 
     loss_valid = 0
     acc_valid = 0  
     cor_valid = 0     
@@ -121,7 +121,7 @@ def validate(network, epoch, criterion, testloader):
 
     return loss_valid, acc_valid
 
-def starting_train(train_loader, valid_loader, training_date, test, network, num_epochs = 100):
+def starting_train(train_loader, valid_loader, training_date, test, network, num_epochs = 100, device):
   if test: 
     trainset_size = 3000
     
@@ -148,13 +148,13 @@ def starting_train(train_loader, valid_loader, training_date, test, network, num
   for epoch in range(1, num_epochs+1):
     
     #helper function 1
-    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader)
+    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader, device = device)
     
     #Helper function 2
     #do not evalulate the model per epoch 
     #Evaluate and save every 3 epoch 
     if epoch % 2 ==0: 
-      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader)
+      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader, device = device)
       print('Epoch: {}  Train Loss: {:.4f}  Train Acc: {:.4f}  Valid Loss: {:.4f}  Valid Acc: {:.4f}'.format(epoch, loss_train, acc_train, loss_valid, acc_valid))
       wandb.log({
         "Epoch": epoch,

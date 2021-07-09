@@ -46,8 +46,7 @@ def main(config):
         network=model,
         num_epochs=config['epochs'],
         test = config['test'], 
-        training_date = config['train_date'],
-        device = device
+        training_date = config['train_date']
     )
 
 

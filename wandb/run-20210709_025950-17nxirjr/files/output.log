@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "main.py", line 64, in <module>
+    main(config)
+  File "main.py", line 49, in main
+    training_date = config['train_date']
+  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 151, in starting_train
+    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader)
+  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 38, in train
+    images = images.to(device)
+NameError: name 'device' is not defined
