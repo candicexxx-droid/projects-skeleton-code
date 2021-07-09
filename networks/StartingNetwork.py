@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 import matplotlib.pyplot as plt
-
+import torchvision.models as models
 #600x800
 
 class StartingNetwork(torch.nn.Module):
@@ -32,6 +32,7 @@ class StartingNetwork(torch.nn.Module):
         x = F.relu(x)
 
         x = self.fc4(x)
+        x = F.softmax(x)
 
         return x
 
@@ -43,9 +44,16 @@ class CNN(nn.Module): #changed to resnet
     """
     def __init__(self):
         super().__init__()
-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
-        self.resnet.eval() #//set on eval mode to freeze weights
+        self.modified_resnet = models.resnet18()
+        # Freeze model weights
+        for param in model.parameters():
+            param.requires_grad = False
+        
+        print('pretrained weights fixed!')
+
+        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+        # self.resnet.eval() #//set on eval mode to freeze weights
 
         # #filter is 5, output channels is 6 (both can be changed)
         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
@@ -68,19 +76,19 @@ class CNN(nn.Module): #changed to resnet
         # self.pool4 = nn.MaxPool2d(2,2)
 
         # #16 channels, not sure about 4x4
-        self.fc = StartingNetwork(512, output_dim=5)
+        self.modified_resnet.fc = StartingNetwork(512, output_dim=5)
 
     def forward(self, x):
 
-        with torch.no_grad(): 
-            x = self.resnet(x)#freeze the weight 
-           #//use like normal but use no_grad
+        # with torch.no_grad(): 
+        #     x = self.resnet(x)#freeze the weight 
+        #    #//use like normal but use no_grad
 
-        # x = self.pool(F.relu(self.conv1(x)))
-        # x = self.pool2(F.relu(self.conv2(x)))
-        # x = self.pool3(F.relu(self.conv3(x)))
-        # x = self.pool4(F.relu(self.conv4(x)))
+        # # x = self.pool(F.relu(self.conv1(x)))
+        # # x = self.pool2(F.relu(self.conv2(x)))
+        # # x = self.pool3(F.relu(self.conv3(x)))
+        # # x = self.pool4(F.relu(self.conv4(x)))
 
-        #keep the fc layers unchanged 
-        x = self.fc.forward(x)
+        # #keep the fc layers unchanged 
+        x = self.modified_resnet(x)
         return x
