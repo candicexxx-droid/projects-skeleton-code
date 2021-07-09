@@ -1,0 +1,3352 @@
+diff --git a/main.py b/main.py
+index edfbc3c..6fe0a51 100644
+--- a/main.py
++++ b/main.py
+@@ -1,7 +1,7 @@
+ import argparse
+ 
+ import os
+-
++import torch
+ #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
+ 
+ import constants
+@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
+ from train_functions.starting_train import starting_train
+ from config import config
+ # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
+-
++import importlib
+ # SUMMARIES_PATH = "training_summaries"
+-
++parser = argparse.ArgumentParser()
++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
++args = parser.parse_args()
++# get experiment config
++config_module = importlib.import_module(args.config_name)
++config = config_module.config
+ 
+ def main(config):
+     # Get command line arguments
+     # args = parse_arguments()
+-    
++    #commit test
+ 
+     # Create path for training summaries
+     # summary_path = None
+@@ -34,13 +39,15 @@ def main(config):
+ 
+     # Initalize dataset and model. Then train the model!
+     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
+-    model = StartingNetwork()
++    model = StartingNetwork().to(device)
+     starting_train(
+         train_loader=train_loader,
+         valid_loader=valid_loader,
+         network=model,
+         num_epochs=config['epochs'],
+-        test = config['test']
++        test = config['test'], 
++        training_date = config['train_date'],
++        device = device
+     )
+ 
+ 
+@@ -55,4 +62,4 @@ def main(config):
+ 
+ 
+ if __name__ == "__main__":
+-    main()
++    main(config)
+diff --git a/networks/StartingNetwork.py b/networks/StartingNetwork.py
+index cb87187..28db092 100644
+--- a/networks/StartingNetwork.py
++++ b/networks/StartingNetwork.py
+@@ -3,10 +3,10 @@ import torch.nn as nn
+ import torch.nn.functional as F
+ import torchvision
+ import matplotlib.pyplot as plt
+-
++import torchvision.models as models
+ #600x800
+ 
+-class StartingNetwork(torch.nn.Module):
++class fc(torch.nn.Module):
+     """
+     Basic logistic regression on 224x224x3 images.
+     """
+@@ -32,20 +32,28 @@ class StartingNetwork(torch.nn.Module):
+         x = F.relu(x)
+ 
+         x = self.fc4(x)
++        x = F.softmax(x)
+ 
+         return x
+ 
+  
+ 
+-class CNN(nn.Module): #changed to resnet
++class StartingNetwork(nn.Module): #changed to resnet
+     """
+     Basic CNN to pass the data through
+     """
+     def __init__(self):
+         super().__init__()
+-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+-        self.resnet.eval() #//set on eval mode to freeze weights
++        self.modified_resnet = models.resnet18()
++        # Freeze model weights
++        for param in self.modified_resnet.parameters():
++            param.requires_grad = False
++        
++        print('pretrained weights fixed!')
++
++        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
++        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
++        # self.resnet.eval() #//set on eval mode to freeze weights
+ 
+         # #filter is 5, output channels is 6 (both can be changed)
+         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
+@@ -66,21 +74,21 @@ class CNN(nn.Module): #changed to resnet
+ 
+         # self.conv4 = nn.Conv2d(24, 48, 5)
+         # self.pool4 = nn.MaxPool2d(2,2)
+-
++        #commit test
+         # #16 channels, not sure about 4x4
+-        self.fc = StartingNetwork(512, output_dim=5)
++        self.modified_resnet.fc = fc(512, output_dim=5)
+ 
+     def forward(self, x):
+ 
+-        with torch.no_grad(): 
+-            x = self.resnet(x)#freeze the weight 
+-           #//use like normal but use no_grad
++        # with torch.no_grad(): 
++        #     x = self.resnet(x)#freeze the weight 
++        #    #//use like normal but use no_grad
+ 
+-        # x = self.pool(F.relu(self.conv1(x)))
+-        # x = self.pool2(F.relu(self.conv2(x)))
+-        # x = self.pool3(F.relu(self.conv3(x)))
+-        # x = self.pool4(F.relu(self.conv4(x)))
++        # # x = self.pool(F.relu(self.conv1(x)))
++        # # x = self.pool2(F.relu(self.conv2(x)))
++        # # x = self.pool3(F.relu(self.conv3(x)))
++        # # x = self.pool4(F.relu(self.conv4(x)))
+ 
+-        #keep the fc layers unchanged 
+-        x = self.fc.forward(x)
++        # #keep the fc layers unchanged 
++        x = self.modified_resnet(x)
+         return x
+\ No newline at end of file
+diff --git a/train_functions/starting_train.py b/train_functions/starting_train.py
+index f3525b6..d4f2db9 100644
+--- a/train_functions/starting_train.py
++++ b/train_functions/starting_train.py
+@@ -6,7 +6,7 @@ import wandb
+ # import sys
+ # sys.path.insert(1, '/content/projects-skeleton-code/networks')
+ # from StartingNetwork import CNN
+-
++import time
+ #####contains:
+ #find_acc
+ #train
+@@ -21,7 +21,7 @@ def find_acc(pred, label): #calculate accuracy for each batch
+     #
+     return correct_label,accuracy
+ 
+-def train(network, epoch, criterion, optimizer, trainloader):
++def train(network, epoch, criterion, optimizer, trainloader, deivce):
+     loss_train = 0
+     cor_train = 0
+     acc_train = 0
+@@ -80,7 +80,7 @@ def train(network, epoch, criterion, optimizer, trainloader):
+ 
+     return loss_train, acc_train  
+         
+-def validate(network, epoch, criterion, testloader): 
++def validate(network, epoch, criterion, testloader, deivce): 
+     loss_valid = 0
+     acc_valid = 0  
+     cor_valid = 0     
+@@ -121,7 +121,7 @@ def validate(network, epoch, criterion, testloader):
+ 
+     return loss_valid, acc_valid
+ 
+-def starting_train(train_loader, valid_loader, training_date, test, network, num_epochs = 100):
++def starting_train(train_loader, valid_loader, training_date, test, network, device,num_epochs = 100):
+   if test: 
+     trainset_size = 3000
+     
+@@ -148,13 +148,13 @@ def starting_train(train_loader, valid_loader, training_date, test, network, num
+   for epoch in range(1, num_epochs+1):
+     
+     #helper function 1
+-    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader)
++    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader, device = device)
+     
+     #Helper function 2
+     #do not evalulate the model per epoch 
+     #Evaluate and save every 3 epoch 
+     if epoch % 2 ==0: 
+-      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader)
++      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader, device = device)
+       print('Epoch: {}  Train Loss: {:.4f}  Train Acc: {:.4f}  Valid Loss: {:.4f}  Valid Acc: {:.4f}'.format(epoch, loss_train, acc_train, loss_valid, acc_valid))
+       wandb.log({
+         "Epoch": epoch,
+diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
+new file mode 120000
+index 0000000..74a6e05
+--- /dev/null
++++ b/wandb/debug-internal.log
+@@ -0,0 +1 @@
++run-20210709_030516-1w7gbld1/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+new file mode 120000
+index 0000000..b82ef88
+--- /dev/null
++++ b/wandb/debug.log
+@@ -0,0 +1 @@
++run-20210709_030516-1w7gbld1/logs/debug.log
+\ No newline at end of file
+diff --git a/wandb/latest-run b/wandb/latest-run
+new file mode 120000
+index 0000000..4ab3c60
+--- /dev/null
++++ b/wandb/latest-run
+@@ -0,0 +1 @@
++run-20210709_030516-1w7gbld1
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/code/main.py b/wandb/run-20210709_025823-1dgngst8/files/code/main.py
+new file mode 100644
+index 0000000..002bae9
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/code/main.py
+@@ -0,0 +1,64 @@
++import argparse
++
++import os
++import torch
++#lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
++
++import constants
++from datasets.StartingDataset import StartingDataset
++from networks.StartingNetwork import StartingNetwork
++from train_functions.starting_train import starting_train
++from config import config
++# os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
++import importlib
++# SUMMARIES_PATH = "training_summaries"
++parser = argparse.ArgumentParser()
++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
++args = parser.parse_args()
++# get experiment config
++config_module = importlib.import_module(args.config_name)
++config = config_module.config
++
++def main(config):
++    # Get command line arguments
++    # args = parse_arguments()
++    #commit test
++
++    # Create path for training summaries
++    # summary_path = None
++    # if args.logdir is not None:
++    #     summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
++    #     os.makedirs(summary_path, exist_ok=True)
++
++    # TODO: Add GPU support. This line of code might be helpful.
++    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
++
++    # print("Summary path:", summary_path)
++    print("Epochs:", config['epochs'])
++    print("Batch size:", config['batch_size'])
++
++    # Initalize dataset and model. Then train the model!
++    train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
++    model = StartingNetwork().to(device)
++    starting_train(
++        train_loader=train_loader,
++        valid_loader=valid_loader,
++        network=model,
++        num_epochs=config['epochs'],
++        test = config['test'], 
++        training_date = config['train_date']
++    )
++
++
++# def parse_arguments():
++#     parser = argparse.ArgumentParser()
++#     parser.add_argument("epochs", type=int, default=constants.EPOCHS)
++#     parser.add_argument("batch_size", type=int, default=constants.BATCH_SIZE)
++#     parser.add_argument("test", type=bool, default=constants.TEST)
++#     # parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
++#     # parser.add_argument("--logdir", type=str, default=None)
++#     return parser.parse_args()
++
++
++if __name__ == "__main__":
++    main(config)
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/config.yaml b/wandb/run-20210709_025823-1dgngst8/files/config.yaml
+new file mode 100644
+index 0000000..259cdae
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/config.yaml
+@@ -0,0 +1,26 @@
++wandb_version: 1
++
++_wandb:
++  desc: null
++  value:
++    cli_version: 0.10.33
++    code_path: code/main.py
++    framework: torch
++    is_jupyter_run: false
++    is_kaggle_kernel: true
++    python_version: 3.7.10
++    t:
++      1:
++      - 1
++      2:
++      - 1
++      3:
++      - 1
++      4: 3.7.10
++      5: 0.10.33
++      8:
++      - 2
++      - 5
++lr:
++  desc: null
++  value: 0.01
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/output.log b/wandb/run-20210709_025823-1dgngst8/files/output.log
+new file mode 100644
+index 0000000..61c96e7
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/output.log
+@@ -0,0 +1,8 @@
++Traceback (most recent call last):
++  File "main.py", line 64, in <module>
++    main(config)
++  File "main.py", line 49, in main
++    training_date = config['train_date']
++  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 147, in starting_train
++    start_time = time.time()
++NameError: name 'time' is not defined
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/requirements.txt b/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
+new file mode 100644
+index 0000000..1226f63
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
+@@ -0,0 +1,396 @@
++absl-py==0.12.0
++alabaster==0.7.12
++albumentations==0.1.12
++altair==4.1.0
++appdirs==1.4.4
++argon2-cffi==20.1.0
++arviz==0.11.2
++astor==0.8.1
++astropy==4.2.1
++astunparse==1.6.3
++async-generator==1.10
++atari-py==0.2.9
++atomicwrites==1.4.0
++attrs==21.2.0
++audioread==2.1.9
++autograd==1.3
++babel==2.9.1
++backcall==0.2.0
++beautifulsoup4==4.6.3
++bleach==3.3.0
++blis==0.4.1
++bokeh==2.3.2
++bottleneck==1.3.2
++branca==0.4.2
++bs4==0.0.1
++cachecontrol==0.12.6
++cached-property==1.5.2
++cachetools==4.2.2
++catalogue==1.0.0
++certifi==2021.5.30
++cffi==1.14.5
++cftime==1.5.0
++chardet==3.0.4
++click==7.1.2
++cloudpickle==1.3.0
++cmake==3.12.0
++cmdstanpy==0.9.5
++colorcet==2.0.6
++colorlover==0.3.0
++community==1.0.0b1
++configparser==5.0.2
++contextlib2==0.5.5
++convertdate==2.3.2
++coverage==3.7.1
++coveralls==0.5
++crcmod==1.7
++cufflinks==0.17.3
++cupy-cuda101==9.1.0
++cvxopt==1.2.6
++cvxpy==1.0.31
++cycler==0.10.0
++cymem==2.0.5
++cython==0.29.23
++daft==0.0.4
++dask==2.12.0
++datascience==0.10.6
++debugpy==1.0.0
++decorator==4.4.2
++defusedxml==0.7.1
++descartes==1.1.0
++dill==0.3.4
++distributed==1.25.3
++dlib==19.18.0
++dm-tree==0.1.6
++docker-pycreds==0.4.0
++docopt==0.6.2
++docutils==0.17.1
++dopamine-rl==1.0.5
++earthengine-api==0.1.272
++easydict==1.9
++ecos==2.0.7.post1
++editdistance==0.5.3
++en-core-web-sm==2.2.5
++entrypoints==0.3
++ephem==4.0.0.2
++et-xmlfile==1.1.0
++fa2==0.3.5
++fastai==1.0.61
++fastdtw==0.3.4
++fastprogress==1.0.0
++fastrlock==0.6
++fbprophet==0.7.1
++feather-format==0.4.1
++filelock==3.0.12
++firebase-admin==4.4.0
++fix-yahoo-finance==0.0.22
++flask==1.1.4
++flatbuffers==1.12
++folium==0.8.3
++future==0.16.0
++gast==0.4.0
++gdal==2.2.2
++gdown==3.6.4
++gensim==3.6.0
++geographiclib==1.52
++geopy==1.17.0
++gin-config==0.4.0
++gitdb==4.0.7
++gitpython==3.1.18
++glob2==0.7
++google-api-core==1.26.3
++google-api-python-client==1.12.8
++google-auth-httplib2==0.0.4
++google-auth-oauthlib==0.4.4
++google-auth==1.32.1
++google-cloud-bigquery-storage==1.1.0
++google-cloud-bigquery==1.21.0
++google-cloud-core==1.0.3
++google-cloud-datastore==1.8.0
++google-cloud-firestore==1.7.0
++google-cloud-language==1.2.0
++google-cloud-storage==1.18.1
++google-cloud-translate==1.5.0
++google-colab==1.0.0
++google-pasta==0.2.0
++google-resumable-media==0.4.1
++google==2.0.3
++googleapis-common-protos==1.53.0
++googledrivedownloader==0.4
++graphviz==0.10.1
++greenlet==1.1.0
++grpcio==1.34.1
++gspread-dataframe==3.0.8
++gspread==3.0.1
++gym==0.17.3
++h5py==3.1.0
++heapdict==1.0.1
++hijri-converter==2.1.3
++holidays==0.10.5.2
++holoviews==1.14.4
++html5lib==1.0.1
++httpimport==0.5.18
++httplib2==0.17.4
++httplib2shim==0.0.3
++humanize==0.5.1
++hyperopt==0.1.2
++ideep4py==2.0.0.post3
++idna==2.10
++imageio==2.4.1
++imagesize==1.2.0
++imbalanced-learn==0.4.3
++imblearn==0.0
++imgaug==0.2.9
++importlib-metadata==4.6.0
++importlib-resources==5.2.0
++imutils==0.5.4
++inflect==2.1.0
++iniconfig==1.1.1
++install==1.3.4
++intel-openmp==2021.3.0
++intervaltree==2.1.0
++ipykernel==4.10.1
++ipython-genutils==0.2.0
++ipython-sql==0.3.9
++ipython==5.5.0
++ipywidgets==7.6.3
++itsdangerous==1.1.0
++jax==0.2.13
++jaxlib==0.1.66+cuda110
++jdcal==1.4.1
++jedi==0.18.0
++jieba==0.42.1
++jinja2==2.11.3
++joblib==1.0.1
++jpeg4py==0.1.4
++jsonschema==2.6.0
++jupyter-client==5.3.5
++jupyter-console==5.2.0
++jupyter-core==4.7.1
++jupyter==1.0.0
++jupyterlab-pygments==0.1.2
++jupyterlab-widgets==1.0.0
++kaggle==1.5.12
++kapre==0.3.5
++keras-nightly==2.5.0.dev2021032900
++keras-preprocessing==1.1.2
++keras-vis==0.4.1
++keras==2.4.3
++kiwisolver==1.3.1
++korean-lunar-calendar==0.2.1
++librosa==0.8.1
++lightgbm==2.2.3
++llvmlite==0.34.0
++lmdb==0.99
++lunarcalendar==0.0.9
++lxml==4.2.6
++markdown==3.3.4
++markupsafe==2.0.1
++matplotlib-inline==0.1.2
++matplotlib-venn==0.11.6
++matplotlib==3.2.2
++missingno==0.4.2
++mistune==0.8.4
++mizani==0.6.0
++mkl==2019.0
++mlxtend==0.14.0
++more-itertools==8.8.0
++moviepy==0.2.3.5
++mpmath==1.2.1
++msgpack==1.0.2
++multiprocess==0.70.12.2
++multitasking==0.0.9
++murmurhash==1.0.5
++music21==5.5.0
++natsort==5.5.0
++nbclient==0.5.3
++nbconvert==5.6.1
++nbformat==5.1.3
++nest-asyncio==1.5.1
++netcdf4==1.5.7
++networkx==2.5.1
++nibabel==3.0.2
++nltk==3.2.5
++notebook==5.3.1
++numba==0.51.2
++numexpr==2.7.3
++numpy==1.19.5
++nvidia-ml-py3==7.352.0
++oauth2client==4.1.3
++oauthlib==3.1.1
++okgrade==0.4.3
++opencv-contrib-python==4.1.2.30
++opencv-python==4.1.2.30
++openpyxl==2.5.9
++opt-einsum==3.3.0
++osqp==0.6.2.post0
++packaging==20.9
++palettable==3.3.0
++pandas-datareader==0.9.0
++pandas-gbq==0.13.3
++pandas-profiling==1.4.1
++pandas==1.1.5
++pandocfilters==1.4.3
++panel==0.11.3
++param==1.10.1
++parso==0.8.2
++pathlib==1.0.1
++pathtools==0.1.2
++patsy==0.5.1
++pexpect==4.8.0
++pickleshare==0.7.5
++pillow==7.1.2
++pip-tools==4.5.1
++pip==19.3.1
++plac==1.1.3
++plotly==4.4.1
++plotnine==0.6.0
++pluggy==0.7.1
++pooch==1.4.0
++portpicker==1.3.9
++prefetch-generator==1.0.1
++preshed==3.0.5
++prettytable==2.1.0
++progressbar2==3.38.0
++prometheus-client==0.11.0
++promise==2.3
++prompt-toolkit==1.0.18
++protobuf==3.17.3
++psutil==5.4.8
++psycopg2==2.7.6.1
++ptyprocess==0.7.0
++py==1.10.0
++pyarrow==3.0.0
++pyasn1-modules==0.2.8
++pyasn1==0.4.8
++pycocotools==2.0.2
++pycparser==2.20
++pyct==0.4.8
++pydata-google-auth==1.2.0
++pydot-ng==2.0.0
++pydot==1.3.0
++pydotplus==2.0.2
++pydrive==1.3.1
++pyemd==0.5.1
++pyerfa==2.0.0
++pyglet==1.5.0
++pygments==2.6.1
++pygobject==3.26.1
++pymc3==3.11.2
++pymeeus==0.5.11
++pymongo==3.11.4
++pymystem3==0.2.0
++pyopengl==3.1.5
++pyparsing==2.4.7
++pyrsistent==0.18.0
++pysndfile==1.3.8
++pysocks==1.7.1
++pystan==2.19.1.1
++pytest==3.6.4
++python-apt==0.0.0
++python-chess==0.23.11
++python-dateutil==2.8.1
++python-louvain==0.15
++python-slugify==5.0.2
++python-utils==2.5.6
++pytz==2018.9
++pyviz-comms==2.1.0
++pywavelets==1.1.1
++pyyaml==3.13
++pyzmq==22.1.0
++qdldl==0.1.5.post0
++qtconsole==5.1.1
++qtpy==1.9.0
++regex==2019.12.20
++requests-oauthlib==1.3.0
++requests==2.23.0
++resampy==0.2.2
++retrying==1.3.3
++rpy2==3.4.5
++rsa==4.7.2
++scikit-image==0.16.2
++scikit-learn==0.22.2.post1
++scipy==1.4.1
++screen-resolution-extra==0.0.0
++scs==2.1.4
++seaborn==0.11.1
++semver==2.13.0
++send2trash==1.7.1
++sentry-sdk==1.3.0
++setuptools-git==1.2
++setuptools==57.0.0
++shapely==1.7.1
++shortuuid==1.0.1
++simplegeneric==0.8.1
++six==1.15.0
++sklearn-pandas==1.8.0
++sklearn==0.0
++smart-open==5.1.0
++smmap==4.0.0
++snowballstemmer==2.1.0
++sortedcontainers==2.4.0
++soundfile==0.10.3.post1
++spacy==2.2.4
++sphinx==1.8.5
++sphinxcontrib-serializinghtml==1.1.5
++sphinxcontrib-websupport==1.2.4
++sqlalchemy==1.4.20
++sqlparse==0.4.1
++srsly==1.0.5
++statsmodels==0.10.2
++subprocess32==3.5.4
++sympy==1.7.1
++tables==3.4.4
++tabulate==0.8.9
++tblib==1.7.0
++tensorboard-data-server==0.6.1
++tensorboard-plugin-wit==1.8.0
++tensorboard==2.5.0
++tensorflow-datasets==4.0.1
++tensorflow-estimator==2.5.0
++tensorflow-gcs-config==2.5.0
++tensorflow-hub==0.12.0
++tensorflow-metadata==1.1.0
++tensorflow-probability==0.13.0
++tensorflow==2.5.0
++termcolor==1.1.0
++terminado==0.10.1
++testpath==0.5.0
++text-unidecode==1.3
++textblob==0.15.3
++theano-pymc==1.1.2
++thinc==7.4.0
++tifffile==2021.7.2
++toml==0.10.2
++toolz==0.11.1
++torch==1.9.0+cu102
++torchsummary==1.5.1
++torchtext==0.10.0
++torchvision==0.10.0+cu102
++tornado==5.1.1
++tqdm==4.41.1
++traitlets==5.0.5
++tweepy==3.10.0
++typeguard==2.7.1
++typing-extensions==3.7.4.3
++tzlocal==1.5.1
++uritemplate==3.0.1
++urllib3==1.24.3
++vega-datasets==0.9.0
++wandb==0.10.33
++wasabi==0.8.2
++wcwidth==0.2.5
++webencodings==0.5.1
++werkzeug==1.0.1
++wheel==0.36.2
++widgetsnbextension==3.5.1
++wordcloud==1.5.0
++wrapt==1.12.1
++xarray==0.18.2
++xgboost==0.90
++xkit==0.0.0
++xlrd==1.1.0
++xlwt==1.3.0
++yellowbrick==0.9.1
++zict==2.0.0
++zipp==3.4.1
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch b/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+new file mode 100644
+index 0000000..a8102de
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+@@ -0,0 +1,143 @@
++diff --git a/main.py b/main.py
++index edfbc3c..002bae9 100644
++--- a/main.py
+++++ b/main.py
++@@ -1,7 +1,7 @@
++ import argparse
++ 
++ import os
++-
+++import torch
++ #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
++ 
++ import constants
++@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
++ from train_functions.starting_train import starting_train
++ from config import config
++ # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
++-
+++import importlib
++ # SUMMARIES_PATH = "training_summaries"
++-
+++parser = argparse.ArgumentParser()
+++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
+++args = parser.parse_args()
+++# get experiment config
+++config_module = importlib.import_module(args.config_name)
+++config = config_module.config
++ 
++ def main(config):
++     # Get command line arguments
++     # args = parse_arguments()
++-    
+++    #commit test
++ 
++     # Create path for training summaries
++     # summary_path = None
++@@ -34,13 +39,14 @@ def main(config):
++ 
++     # Initalize dataset and model. Then train the model!
++     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
++-    model = StartingNetwork()
+++    model = StartingNetwork().to(device)
++     starting_train(
++         train_loader=train_loader,
++         valid_loader=valid_loader,
++         network=model,
++         num_epochs=config['epochs'],
++-        test = config['test']
+++        test = config['test'], 
+++        training_date = config['train_date']
++     )
++ 
++ 
++@@ -55,4 +61,4 @@ def main(config):
++ 
++ 
++ if __name__ == "__main__":
++-    main()
+++    main(config)
++diff --git a/networks/StartingNetwork.py b/networks/StartingNetwork.py
++index cb87187..28db092 100644
++--- a/networks/StartingNetwork.py
+++++ b/networks/StartingNetwork.py
++@@ -3,10 +3,10 @@ import torch.nn as nn
++ import torch.nn.functional as F
++ import torchvision
++ import matplotlib.pyplot as plt
++-
+++import torchvision.models as models
++ #600x800
++ 
++-class StartingNetwork(torch.nn.Module):
+++class fc(torch.nn.Module):
++     """
++     Basic logistic regression on 224x224x3 images.
++     """
++@@ -32,20 +32,28 @@ class StartingNetwork(torch.nn.Module):
++         x = F.relu(x)
++ 
++         x = self.fc4(x)
+++        x = F.softmax(x)
++ 
++         return x
++ 
++  
++ 
++-class CNN(nn.Module): #changed to resnet
+++class StartingNetwork(nn.Module): #changed to resnet
++     """
++     Basic CNN to pass the data through
++     """
++     def __init__(self):
++         super().__init__()
++-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
++-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
++-        self.resnet.eval() #//set on eval mode to freeze weights
+++        self.modified_resnet = models.resnet18()
+++        # Freeze model weights
+++        for param in self.modified_resnet.parameters():
+++            param.requires_grad = False
+++        
+++        print('pretrained weights fixed!')
+++
+++        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+++        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+++        # self.resnet.eval() #//set on eval mode to freeze weights
++ 
++         # #filter is 5, output channels is 6 (both can be changed)
++         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
++@@ -66,21 +74,21 @@ class CNN(nn.Module): #changed to resnet
++ 
++         # self.conv4 = nn.Conv2d(24, 48, 5)
++         # self.pool4 = nn.MaxPool2d(2,2)
++-
+++        #commit test
++         # #16 channels, not sure about 4x4
++-        self.fc = StartingNetwork(512, output_dim=5)
+++        self.modified_resnet.fc = fc(512, output_dim=5)
++ 
++     def forward(self, x):
++ 
++-        with torch.no_grad(): 
++-            x = self.resnet(x)#freeze the weight 
++-           #//use like normal but use no_grad
+++        # with torch.no_grad(): 
+++        #     x = self.resnet(x)#freeze the weight 
+++        #    #//use like normal but use no_grad
++ 
++-        # x = self.pool(F.relu(self.conv1(x)))
++-        # x = self.pool2(F.relu(self.conv2(x)))
++-        # x = self.pool3(F.relu(self.conv3(x)))
++-        # x = self.pool4(F.relu(self.conv4(x)))
+++        # # x = self.pool(F.relu(self.conv1(x)))
+++        # # x = self.pool2(F.relu(self.conv2(x)))
+++        # # x = self.pool3(F.relu(self.conv3(x)))
+++        # # x = self.pool4(F.relu(self.conv4(x)))
++ 
++-        #keep the fc layers unchanged 
++-        x = self.fc.forward(x)
+++        # #keep the fc layers unchanged 
+++        x = self.modified_resnet(x)
++         return x
++\ No newline at end of file
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json b/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
+new file mode 100644
+index 0000000..6dcb9d5
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
+@@ -0,0 +1,26 @@
++{
++    "os": "Linux-5.4.104+-x86_64-with-Ubuntu-18.04-bionic",
++    "python": "3.7.10",
++    "heartbeatAt": "2021-07-09T02:58:27.904556",
++    "startedAt": "2021-07-09T02:58:23.825141",
++    "docker": null,
++    "gpu": "Tesla T4",
++    "gpu_count": 1,
++    "cpu_count": 2,
++    "cuda": "11.0.228",
++    "args": [
++        "config"
++    ],
++    "state": "running",
++    "program": "main.py",
++    "codePath": "main.py",
++    "git": {
++        "remote": "https://github.com/candicexxx-droid/projects-skeleton-code.git",
++        "commit": "e6ba3a6170d4aadbfb55ad5bec77d45bec38fa0a"
++    },
++    "email": "caixy.candice2016@outlook.com",
++    "root": "/content/projects-skeleton-code",
++    "host": "7222cdb1f6d1",
++    "username": "root",
++    "executable": "/usr/bin/python3"
++}
+diff --git a/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json b/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log b/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
+new file mode 100644
+index 0000000..ec81507
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
+@@ -0,0 +1,149 @@
++2021-07-09 02:58:24,629 INFO    MainThread:771 [internal.py:wandb_internal():91] W&B internal server running at pid: 771, started at: 2021-07-09 02:58:24.629673
++2021-07-09 02:58:24,632 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: check_version
++2021-07-09 02:58:24,632 INFO    WriterThread:771 [datastore.py:open_for_write():80] open: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
++2021-07-09 02:58:24,633 DEBUG   SenderThread:771 [sender.py:send():179] send: header
++2021-07-09 02:58:24,633 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: check_version
++2021-07-09 02:58:24,670 DEBUG   SenderThread:771 [sender.py:send():179] send: run
++2021-07-09 02:58:24,780 INFO    SenderThread:771 [dir_watcher.py:__init__():168] watching files in: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files
++2021-07-09 02:58:24,780 INFO    SenderThread:771 [sender.py:_start_run_threads():719] run started: 1dgngst8 with start time 1625799503
++2021-07-09 02:58:24,781 DEBUG   SenderThread:771 [sender.py:send():179] send: summary
++2021-07-09 02:58:24,781 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: run_start
++2021-07-09 02:58:24,781 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
++2021-07-09 02:58:25,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:__init__():39] meta init
++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:__init__():53] meta init done
++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:probe():210] probe
++2021-07-09 02:58:27,911 DEBUG   HandlerThread:771 [meta.py:_setup_git():200] setup git
++2021-07-09 02:58:27,933 DEBUG   HandlerThread:771 [meta.py:_setup_git():207] setup git done
++2021-07-09 02:58:27,933 DEBUG   HandlerThread:771 [meta.py:_save_code():89] save code
++2021-07-09 02:58:27,941 DEBUG   HandlerThread:771 [meta.py:_save_code():110] save code done
++2021-07-09 02:58:27,941 DEBUG   HandlerThread:771 [meta.py:_save_patches():127] save patches
++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_patches():169] save patches done
++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_pip():57] save pip
++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_pip():71] save pip done
++2021-07-09 02:58:27,989 DEBUG   HandlerThread:771 [meta.py:probe():252] probe done
++2021-07-09 02:58:27,991 DEBUG   SenderThread:771 [sender.py:send():179] send: files
++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-metadata.json with policy now
++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file code/main.py with policy now
++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch with policy now
++2021-07-09 02:58:27,999 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: stop_status
++2021-07-09 02:58:27,999 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: stop_status
++2021-07-09 02:58:28,070 DEBUG   SenderThread:771 [sender.py:send():179] send: config
++2021-07-09 02:58:28,080 INFO    Thread-12 :771 [upload_job.py:push():117] Skipped uploading /tmp/tmptbs08s9ewandb/1fgulkpm-code/main.py
++2021-07-09 02:58:28,496 INFO    Thread-11 :771 [upload_job.py:push():137] Uploaded file /tmp/tmptbs08s9ewandb/315iz1n4-wandb-metadata.json
++2021-07-09 02:58:28,532 INFO    Thread-13 :771 [upload_job.py:push():137] Uploaded file /tmp/tmptbs08s9ewandb/221gc3j3-upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:58:28,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
++2021-07-09 02:58:28,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code/main.py
++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code
++2021-07-09 02:58:30,503 DEBUG   SenderThread:771 [sender.py:send():179] send: telemetry
++2021-07-09 02:58:30,503 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:30,504 DEBUG   SenderThread:771 [sender.py:send():179] send: exit
++2021-07-09 02:58:30,504 INFO    SenderThread:771 [sender.py:send_exit():287] handling exit code: 1
++2021-07-09 02:58:30,504 INFO    SenderThread:771 [sender.py:send_exit():295] send defer
++2021-07-09 02:58:30,504 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:30,505 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,505 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 0
++2021-07-09 02:58:30,505 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,505 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 0
++2021-07-09 02:58:30,505 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 1
++2021-07-09 02:58:30,506 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,506 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 1
++2021-07-09 02:58:30,537 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,537 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 1
++2021-07-09 02:58:30,537 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 2
++2021-07-09 02:58:30,537 DEBUG   SenderThread:771 [sender.py:send():179] send: stats
++2021-07-09 02:58:30,538 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,538 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 2
++2021-07-09 02:58:30,538 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,538 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 2
++2021-07-09 02:58:30,538 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 3
++2021-07-09 02:58:30,538 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,538 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 3
++2021-07-09 02:58:30,539 DEBUG   SenderThread:771 [sender.py:send():179] send: summary
++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
++2021-07-09 02:58:30,539 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 3
++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 4
++2021-07-09 02:58:30,539 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,539 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 4
++2021-07-09 02:58:30,540 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,540 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 4
++2021-07-09 02:58:30,606 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:30,619 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 5
++2021-07-09 02:58:30,619 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:30,619 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,619 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 5
++2021-07-09 02:58:30,620 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,620 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 5
++2021-07-09 02:58:30,620 INFO    SenderThread:771 [dir_watcher.py:finish():282] shutting down directory watcher
++2021-07-09 02:58:30,720 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:30,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
++2021-07-09 02:58:30,783 INFO    SenderThread:771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml
++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():312] scan: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files
++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml config.yaml
++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json wandb-metadata.json
++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt requirements.txt
++2021-07-09 02:58:30,785 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log output.log
++2021-07-09 02:58:30,790 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json wandb-summary.json
++2021-07-09 02:58:30,790 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:58:30,791 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code/main.py code/main.py
++2021-07-09 02:58:30,791 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 6
++2021-07-09 02:58:30,791 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:30,791 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:30,792 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 6
++2021-07-09 02:58:30,792 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:30,792 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 6
++2021-07-09 02:58:30,792 INFO    SenderThread:771 [file_pusher.py:finish():177] shutting down file pusher
++2021-07-09 02:58:30,893 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:30,893 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:30,994 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:30,995 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,068 INFO    Thread-15 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
++2021-07-09 02:58:31,096 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,096 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,110 INFO    Thread-16 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
++2021-07-09 02:58:31,117 INFO    Thread-17 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
++2021-07-09 02:58:31,198 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,198 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,299 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,299 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,347 INFO    Thread-14 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml
++2021-07-09 02:58:31,400 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,401 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,502 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,502 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,547 INFO    Thread-7  :771 [sender.py:transition_state():308] send defer: 7
++2021-07-09 02:58:31,548 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:31,548 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 7
++2021-07-09 02:58:31,548 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:31,548 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 7
++2021-07-09 02:58:31,603 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,665 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 8
++2021-07-09 02:58:31,666 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,666 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:31,666 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 8
++2021-07-09 02:58:31,667 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:31,667 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 8
++2021-07-09 02:58:31,667 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 9
++2021-07-09 02:58:31,667 DEBUG   SenderThread:771 [sender.py:send():179] send: final
++2021-07-09 02:58:31,668 DEBUG   SenderThread:771 [sender.py:send():179] send: footer
++2021-07-09 02:58:31,668 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:58:31,668 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 9
++2021-07-09 02:58:31,668 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:58:31,668 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 9
++2021-07-09 02:58:31,767 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:58:31,767 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:58:31,767 INFO    SenderThread:771 [file_pusher.py:join():182] waiting for file pusher
++2021-07-09 02:58:31,769 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: get_summary
++2021-07-09 02:58:31,769 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: sampled_history
++2021-07-09 02:58:31,770 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: shutdown
++2021-07-09 02:58:31,770 INFO    HandlerThread:771 [handler.py:finish():638] shutting down handler
++2021-07-09 02:58:32,667 INFO    WriterThread:771 [datastore.py:close():288] close: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
++2021-07-09 02:58:32,768 INFO    SenderThread:771 [sender.py:finish():945] shutting down sender
++2021-07-09 02:58:32,768 INFO    SenderThread:771 [file_pusher.py:finish():177] shutting down file pusher
++2021-07-09 02:58:32,768 INFO    SenderThread:771 [file_pusher.py:join():182] waiting for file pusher
++2021-07-09 02:58:32,770 INFO    MainThread:771 [internal.py:handle_exit():78] Internal process exited
+diff --git a/wandb/run-20210709_025823-1dgngst8/logs/debug.log b/wandb/run-20210709_025823-1dgngst8/logs/debug.log
+new file mode 100644
+index 0000000..4e3bea4
+--- /dev/null
++++ b/wandb/run-20210709_025823-1dgngst8/logs/debug.log
+@@ -0,0 +1,151 @@
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_setup.py:_flush():69] setting env: {}
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_setup.py:_flush():69] setting login settings: {}
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:_log_setup():337] Logging user logs to /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/logs/debug.log
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:_log_setup():338] Logging internal logs to /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:init():370] calling init triggers
++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:init():377] wandb.init called with sweep_config: {}
++config: {}
++2021-07-09 02:58:23,827 INFO    MainThread:755 [wandb_init.py:init():419] starting backend
++2021-07-09 02:58:23,827 INFO    MainThread:755 [backend.py:_multiprocessing_setup():72] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
++2021-07-09 02:58:23,925 INFO    MainThread:755 [backend.py:ensure_launched():135] starting backend process...
++2021-07-09 02:58:23,956 INFO    MainThread:755 [backend.py:ensure_launched():140] started backend process with pid: 771
++2021-07-09 02:58:23,958 INFO    MainThread:755 [wandb_init.py:init():424] backend started and connected
++2021-07-09 02:58:23,961 INFO    MainThread:755 [wandb_init.py:init():472] updated telemetry
++2021-07-09 02:58:23,962 INFO    MainThread:755 [wandb_init.py:init():491] communicating current version
++2021-07-09 02:58:24,669 INFO    MainThread:755 [wandb_init.py:init():496] got version response 
++2021-07-09 02:58:24,669 INFO    MainThread:755 [wandb_init.py:init():504] communicating run to backend with 30 second timeout
++2021-07-09 02:58:24,780 INFO    MainThread:755 [wandb_init.py:init():529] starting run threads in backend
++2021-07-09 02:58:27,996 INFO    MainThread:755 [wandb_run.py:_console_start():1623] atexit reg
++2021-07-09 02:58:27,997 INFO    MainThread:755 [wandb_run.py:_redirect():1497] redirect: SettingsConsole.REDIRECT
++2021-07-09 02:58:27,997 INFO    MainThread:755 [wandb_run.py:_redirect():1502] Redirecting console.
++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_run.py:_redirect():1558] Redirects installed.
++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_init.py:init():554] run started, returning control to user process
++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_config.py:__setitem__():141] config set lr = 0.01 - <bound method Run._config_callback of <wandb.sdk.wandb_run.Run object at 0x7f346ec3ab10>>
++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_run.py:_config_callback():872] config_cb lr 0.01 None
++2021-07-09 02:58:28,000 INFO    MainThread:755 [wandb_watch.py:watch():40] Watching
++2021-07-09 02:58:28,002 INFO    MainThread:755 [wandb_run.py:_atexit_cleanup():1593] got exitcode: 1
++2021-07-09 02:58:28,002 INFO    MainThread:755 [wandb_run.py:_restore():1565] restore
++2021-07-09 02:58:30,505 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 1
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 7635
++  total_bytes: 7635
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:30,619 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 1
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 7635
++  total_bytes: 7635
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:30,792 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 7635
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:30,894 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15079
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:30,995 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,097 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,198 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,300 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,401 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,503 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,666 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:31,768 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: done: true
++exit_result {
++}
++file_counts {
++  wandb_count: 5
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 15418
++  total_bytes: 15418
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:58:33,051 INFO    MainThread:755 [wandb_run.py:_show_files():1937] logging synced files
+diff --git a/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb b/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
+new file mode 100644
+index 0000000..8a4237d
+Binary files /dev/null and b/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb differ
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/code/main.py b/wandb/run-20210709_025950-17nxirjr/files/code/main.py
+new file mode 100644
+index 0000000..002bae9
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/code/main.py
+@@ -0,0 +1,64 @@
++import argparse
++
++import os
++import torch
++#lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
++
++import constants
++from datasets.StartingDataset import StartingDataset
++from networks.StartingNetwork import StartingNetwork
++from train_functions.starting_train import starting_train
++from config import config
++# os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
++import importlib
++# SUMMARIES_PATH = "training_summaries"
++parser = argparse.ArgumentParser()
++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
++args = parser.parse_args()
++# get experiment config
++config_module = importlib.import_module(args.config_name)
++config = config_module.config
++
++def main(config):
++    # Get command line arguments
++    # args = parse_arguments()
++    #commit test
++
++    # Create path for training summaries
++    # summary_path = None
++    # if args.logdir is not None:
++    #     summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
++    #     os.makedirs(summary_path, exist_ok=True)
++
++    # TODO: Add GPU support. This line of code might be helpful.
++    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
++
++    # print("Summary path:", summary_path)
++    print("Epochs:", config['epochs'])
++    print("Batch size:", config['batch_size'])
++
++    # Initalize dataset and model. Then train the model!
++    train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
++    model = StartingNetwork().to(device)
++    starting_train(
++        train_loader=train_loader,
++        valid_loader=valid_loader,
++        network=model,
++        num_epochs=config['epochs'],
++        test = config['test'], 
++        training_date = config['train_date']
++    )
++
++
++# def parse_arguments():
++#     parser = argparse.ArgumentParser()
++#     parser.add_argument("epochs", type=int, default=constants.EPOCHS)
++#     parser.add_argument("batch_size", type=int, default=constants.BATCH_SIZE)
++#     parser.add_argument("test", type=bool, default=constants.TEST)
++#     # parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
++#     # parser.add_argument("--logdir", type=str, default=None)
++#     return parser.parse_args()
++
++
++if __name__ == "__main__":
++    main(config)
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/config.yaml b/wandb/run-20210709_025950-17nxirjr/files/config.yaml
+new file mode 100644
+index 0000000..259cdae
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/config.yaml
+@@ -0,0 +1,26 @@
++wandb_version: 1
++
++_wandb:
++  desc: null
++  value:
++    cli_version: 0.10.33
++    code_path: code/main.py
++    framework: torch
++    is_jupyter_run: false
++    is_kaggle_kernel: true
++    python_version: 3.7.10
++    t:
++      1:
++      - 1
++      2:
++      - 1
++      3:
++      - 1
++      4: 3.7.10
++      5: 0.10.33
++      8:
++      - 2
++      - 5
++lr:
++  desc: null
++  value: 0.01
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/diff.patch b/wandb/run-20210709_025950-17nxirjr/files/diff.patch
+new file mode 100644
+index 0000000..2bd213d
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/diff.patch
+@@ -0,0 +1,27 @@
++diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
++index e305299..41fc0b7 120000
++--- a/wandb/debug-internal.log
+++++ b/wandb/debug-internal.log
++@@ -1 +1 @@
++-run-20210709_025823-1dgngst8/logs/debug-internal.log
++\ No newline at end of file
+++run-20210709_025950-17nxirjr/logs/debug-internal.log
++\ No newline at end of file
++diff --git a/wandb/debug.log b/wandb/debug.log
++index 4cf97e6..e5769b9 120000
++--- a/wandb/debug.log
+++++ b/wandb/debug.log
++@@ -1 +1 @@
++-run-20210709_025823-1dgngst8/logs/debug.log
++\ No newline at end of file
+++run-20210709_025950-17nxirjr/logs/debug.log
++\ No newline at end of file
++diff --git a/wandb/latest-run b/wandb/latest-run
++index 9918aae..b14aef4 120000
++--- a/wandb/latest-run
+++++ b/wandb/latest-run
++@@ -1 +1 @@
++-run-20210709_025823-1dgngst8
++\ No newline at end of file
+++run-20210709_025950-17nxirjr
++\ No newline at end of file
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/output.log b/wandb/run-20210709_025950-17nxirjr/files/output.log
+new file mode 100644
+index 0000000..192c363
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/output.log
+@@ -0,0 +1,10 @@
++Traceback (most recent call last):
++  File "main.py", line 64, in <module>
++    main(config)
++  File "main.py", line 49, in main
++    training_date = config['train_date']
++  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 151, in starting_train
++    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader)
++  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 38, in train
++    images = images.to(device)
++NameError: name 'device' is not defined
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/requirements.txt b/wandb/run-20210709_025950-17nxirjr/files/requirements.txt
+new file mode 100644
+index 0000000..1226f63
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/requirements.txt
+@@ -0,0 +1,396 @@
++absl-py==0.12.0
++alabaster==0.7.12
++albumentations==0.1.12
++altair==4.1.0
++appdirs==1.4.4
++argon2-cffi==20.1.0
++arviz==0.11.2
++astor==0.8.1
++astropy==4.2.1
++astunparse==1.6.3
++async-generator==1.10
++atari-py==0.2.9
++atomicwrites==1.4.0
++attrs==21.2.0
++audioread==2.1.9
++autograd==1.3
++babel==2.9.1
++backcall==0.2.0
++beautifulsoup4==4.6.3
++bleach==3.3.0
++blis==0.4.1
++bokeh==2.3.2
++bottleneck==1.3.2
++branca==0.4.2
++bs4==0.0.1
++cachecontrol==0.12.6
++cached-property==1.5.2
++cachetools==4.2.2
++catalogue==1.0.0
++certifi==2021.5.30
++cffi==1.14.5
++cftime==1.5.0
++chardet==3.0.4
++click==7.1.2
++cloudpickle==1.3.0
++cmake==3.12.0
++cmdstanpy==0.9.5
++colorcet==2.0.6
++colorlover==0.3.0
++community==1.0.0b1
++configparser==5.0.2
++contextlib2==0.5.5
++convertdate==2.3.2
++coverage==3.7.1
++coveralls==0.5
++crcmod==1.7
++cufflinks==0.17.3
++cupy-cuda101==9.1.0
++cvxopt==1.2.6
++cvxpy==1.0.31
++cycler==0.10.0
++cymem==2.0.5
++cython==0.29.23
++daft==0.0.4
++dask==2.12.0
++datascience==0.10.6
++debugpy==1.0.0
++decorator==4.4.2
++defusedxml==0.7.1
++descartes==1.1.0
++dill==0.3.4
++distributed==1.25.3
++dlib==19.18.0
++dm-tree==0.1.6
++docker-pycreds==0.4.0
++docopt==0.6.2
++docutils==0.17.1
++dopamine-rl==1.0.5
++earthengine-api==0.1.272
++easydict==1.9
++ecos==2.0.7.post1
++editdistance==0.5.3
++en-core-web-sm==2.2.5
++entrypoints==0.3
++ephem==4.0.0.2
++et-xmlfile==1.1.0
++fa2==0.3.5
++fastai==1.0.61
++fastdtw==0.3.4
++fastprogress==1.0.0
++fastrlock==0.6
++fbprophet==0.7.1
++feather-format==0.4.1
++filelock==3.0.12
++firebase-admin==4.4.0
++fix-yahoo-finance==0.0.22
++flask==1.1.4
++flatbuffers==1.12
++folium==0.8.3
++future==0.16.0
++gast==0.4.0
++gdal==2.2.2
++gdown==3.6.4
++gensim==3.6.0
++geographiclib==1.52
++geopy==1.17.0
++gin-config==0.4.0
++gitdb==4.0.7
++gitpython==3.1.18
++glob2==0.7
++google-api-core==1.26.3
++google-api-python-client==1.12.8
++google-auth-httplib2==0.0.4
++google-auth-oauthlib==0.4.4
++google-auth==1.32.1
++google-cloud-bigquery-storage==1.1.0
++google-cloud-bigquery==1.21.0
++google-cloud-core==1.0.3
++google-cloud-datastore==1.8.0
++google-cloud-firestore==1.7.0
++google-cloud-language==1.2.0
++google-cloud-storage==1.18.1
++google-cloud-translate==1.5.0
++google-colab==1.0.0
++google-pasta==0.2.0
++google-resumable-media==0.4.1
++google==2.0.3
++googleapis-common-protos==1.53.0
++googledrivedownloader==0.4
++graphviz==0.10.1
++greenlet==1.1.0
++grpcio==1.34.1
++gspread-dataframe==3.0.8
++gspread==3.0.1
++gym==0.17.3
++h5py==3.1.0
++heapdict==1.0.1
++hijri-converter==2.1.3
++holidays==0.10.5.2
++holoviews==1.14.4
++html5lib==1.0.1
++httpimport==0.5.18
++httplib2==0.17.4
++httplib2shim==0.0.3
++humanize==0.5.1
++hyperopt==0.1.2
++ideep4py==2.0.0.post3
++idna==2.10
++imageio==2.4.1
++imagesize==1.2.0
++imbalanced-learn==0.4.3
++imblearn==0.0
++imgaug==0.2.9
++importlib-metadata==4.6.0
++importlib-resources==5.2.0
++imutils==0.5.4
++inflect==2.1.0
++iniconfig==1.1.1
++install==1.3.4
++intel-openmp==2021.3.0
++intervaltree==2.1.0
++ipykernel==4.10.1
++ipython-genutils==0.2.0
++ipython-sql==0.3.9
++ipython==5.5.0
++ipywidgets==7.6.3
++itsdangerous==1.1.0
++jax==0.2.13
++jaxlib==0.1.66+cuda110
++jdcal==1.4.1
++jedi==0.18.0
++jieba==0.42.1
++jinja2==2.11.3
++joblib==1.0.1
++jpeg4py==0.1.4
++jsonschema==2.6.0
++jupyter-client==5.3.5
++jupyter-console==5.2.0
++jupyter-core==4.7.1
++jupyter==1.0.0
++jupyterlab-pygments==0.1.2
++jupyterlab-widgets==1.0.0
++kaggle==1.5.12
++kapre==0.3.5
++keras-nightly==2.5.0.dev2021032900
++keras-preprocessing==1.1.2
++keras-vis==0.4.1
++keras==2.4.3
++kiwisolver==1.3.1
++korean-lunar-calendar==0.2.1
++librosa==0.8.1
++lightgbm==2.2.3
++llvmlite==0.34.0
++lmdb==0.99
++lunarcalendar==0.0.9
++lxml==4.2.6
++markdown==3.3.4
++markupsafe==2.0.1
++matplotlib-inline==0.1.2
++matplotlib-venn==0.11.6
++matplotlib==3.2.2
++missingno==0.4.2
++mistune==0.8.4
++mizani==0.6.0
++mkl==2019.0
++mlxtend==0.14.0
++more-itertools==8.8.0
++moviepy==0.2.3.5
++mpmath==1.2.1
++msgpack==1.0.2
++multiprocess==0.70.12.2
++multitasking==0.0.9
++murmurhash==1.0.5
++music21==5.5.0
++natsort==5.5.0
++nbclient==0.5.3
++nbconvert==5.6.1
++nbformat==5.1.3
++nest-asyncio==1.5.1
++netcdf4==1.5.7
++networkx==2.5.1
++nibabel==3.0.2
++nltk==3.2.5
++notebook==5.3.1
++numba==0.51.2
++numexpr==2.7.3
++numpy==1.19.5
++nvidia-ml-py3==7.352.0
++oauth2client==4.1.3
++oauthlib==3.1.1
++okgrade==0.4.3
++opencv-contrib-python==4.1.2.30
++opencv-python==4.1.2.30
++openpyxl==2.5.9
++opt-einsum==3.3.0
++osqp==0.6.2.post0
++packaging==20.9
++palettable==3.3.0
++pandas-datareader==0.9.0
++pandas-gbq==0.13.3
++pandas-profiling==1.4.1
++pandas==1.1.5
++pandocfilters==1.4.3
++panel==0.11.3
++param==1.10.1
++parso==0.8.2
++pathlib==1.0.1
++pathtools==0.1.2
++patsy==0.5.1
++pexpect==4.8.0
++pickleshare==0.7.5
++pillow==7.1.2
++pip-tools==4.5.1
++pip==19.3.1
++plac==1.1.3
++plotly==4.4.1
++plotnine==0.6.0
++pluggy==0.7.1
++pooch==1.4.0
++portpicker==1.3.9
++prefetch-generator==1.0.1
++preshed==3.0.5
++prettytable==2.1.0
++progressbar2==3.38.0
++prometheus-client==0.11.0
++promise==2.3
++prompt-toolkit==1.0.18
++protobuf==3.17.3
++psutil==5.4.8
++psycopg2==2.7.6.1
++ptyprocess==0.7.0
++py==1.10.0
++pyarrow==3.0.0
++pyasn1-modules==0.2.8
++pyasn1==0.4.8
++pycocotools==2.0.2
++pycparser==2.20
++pyct==0.4.8
++pydata-google-auth==1.2.0
++pydot-ng==2.0.0
++pydot==1.3.0
++pydotplus==2.0.2
++pydrive==1.3.1
++pyemd==0.5.1
++pyerfa==2.0.0
++pyglet==1.5.0
++pygments==2.6.1
++pygobject==3.26.1
++pymc3==3.11.2
++pymeeus==0.5.11
++pymongo==3.11.4
++pymystem3==0.2.0
++pyopengl==3.1.5
++pyparsing==2.4.7
++pyrsistent==0.18.0
++pysndfile==1.3.8
++pysocks==1.7.1
++pystan==2.19.1.1
++pytest==3.6.4
++python-apt==0.0.0
++python-chess==0.23.11
++python-dateutil==2.8.1
++python-louvain==0.15
++python-slugify==5.0.2
++python-utils==2.5.6
++pytz==2018.9
++pyviz-comms==2.1.0
++pywavelets==1.1.1
++pyyaml==3.13
++pyzmq==22.1.0
++qdldl==0.1.5.post0
++qtconsole==5.1.1
++qtpy==1.9.0
++regex==2019.12.20
++requests-oauthlib==1.3.0
++requests==2.23.0
++resampy==0.2.2
++retrying==1.3.3
++rpy2==3.4.5
++rsa==4.7.2
++scikit-image==0.16.2
++scikit-learn==0.22.2.post1
++scipy==1.4.1
++screen-resolution-extra==0.0.0
++scs==2.1.4
++seaborn==0.11.1
++semver==2.13.0
++send2trash==1.7.1
++sentry-sdk==1.3.0
++setuptools-git==1.2
++setuptools==57.0.0
++shapely==1.7.1
++shortuuid==1.0.1
++simplegeneric==0.8.1
++six==1.15.0
++sklearn-pandas==1.8.0
++sklearn==0.0
++smart-open==5.1.0
++smmap==4.0.0
++snowballstemmer==2.1.0
++sortedcontainers==2.4.0
++soundfile==0.10.3.post1
++spacy==2.2.4
++sphinx==1.8.5
++sphinxcontrib-serializinghtml==1.1.5
++sphinxcontrib-websupport==1.2.4
++sqlalchemy==1.4.20
++sqlparse==0.4.1
++srsly==1.0.5
++statsmodels==0.10.2
++subprocess32==3.5.4
++sympy==1.7.1
++tables==3.4.4
++tabulate==0.8.9
++tblib==1.7.0
++tensorboard-data-server==0.6.1
++tensorboard-plugin-wit==1.8.0
++tensorboard==2.5.0
++tensorflow-datasets==4.0.1
++tensorflow-estimator==2.5.0
++tensorflow-gcs-config==2.5.0
++tensorflow-hub==0.12.0
++tensorflow-metadata==1.1.0
++tensorflow-probability==0.13.0
++tensorflow==2.5.0
++termcolor==1.1.0
++terminado==0.10.1
++testpath==0.5.0
++text-unidecode==1.3
++textblob==0.15.3
++theano-pymc==1.1.2
++thinc==7.4.0
++tifffile==2021.7.2
++toml==0.10.2
++toolz==0.11.1
++torch==1.9.0+cu102
++torchsummary==1.5.1
++torchtext==0.10.0
++torchvision==0.10.0+cu102
++tornado==5.1.1
++tqdm==4.41.1
++traitlets==5.0.5
++tweepy==3.10.0
++typeguard==2.7.1
++typing-extensions==3.7.4.3
++tzlocal==1.5.1
++uritemplate==3.0.1
++urllib3==1.24.3
++vega-datasets==0.9.0
++wandb==0.10.33
++wasabi==0.8.2
++wcwidth==0.2.5
++webencodings==0.5.1
++werkzeug==1.0.1
++wheel==0.36.2
++widgetsnbextension==3.5.1
++wordcloud==1.5.0
++wrapt==1.12.1
++xarray==0.18.2
++xgboost==0.90
++xkit==0.0.0
++xlrd==1.1.0
++xlwt==1.3.0
++yellowbrick==0.9.1
++zict==2.0.0
++zipp==3.4.1
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch b/wandb/run-20210709_025950-17nxirjr/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+new file mode 100644
+index 0000000..159897b
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+@@ -0,0 +1,1205 @@
++diff --git a/main.py b/main.py
++index edfbc3c..002bae9 100644
++--- a/main.py
+++++ b/main.py
++@@ -1,7 +1,7 @@
++ import argparse
++ 
++ import os
++-
+++import torch
++ #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
++ 
++ import constants
++@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
++ from train_functions.starting_train import starting_train
++ from config import config
++ # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
++-
+++import importlib
++ # SUMMARIES_PATH = "training_summaries"
++-
+++parser = argparse.ArgumentParser()
+++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
+++args = parser.parse_args()
+++# get experiment config
+++config_module = importlib.import_module(args.config_name)
+++config = config_module.config
++ 
++ def main(config):
++     # Get command line arguments
++     # args = parse_arguments()
++-    
+++    #commit test
++ 
++     # Create path for training summaries
++     # summary_path = None
++@@ -34,13 +39,14 @@ def main(config):
++ 
++     # Initalize dataset and model. Then train the model!
++     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
++-    model = StartingNetwork()
+++    model = StartingNetwork().to(device)
++     starting_train(
++         train_loader=train_loader,
++         valid_loader=valid_loader,
++         network=model,
++         num_epochs=config['epochs'],
++-        test = config['test']
+++        test = config['test'], 
+++        training_date = config['train_date']
++     )
++ 
++ 
++@@ -55,4 +61,4 @@ def main(config):
++ 
++ 
++ if __name__ == "__main__":
++-    main()
+++    main(config)
++diff --git a/networks/StartingNetwork.py b/networks/StartingNetwork.py
++index cb87187..28db092 100644
++--- a/networks/StartingNetwork.py
+++++ b/networks/StartingNetwork.py
++@@ -3,10 +3,10 @@ import torch.nn as nn
++ import torch.nn.functional as F
++ import torchvision
++ import matplotlib.pyplot as plt
++-
+++import torchvision.models as models
++ #600x800
++ 
++-class StartingNetwork(torch.nn.Module):
+++class fc(torch.nn.Module):
++     """
++     Basic logistic regression on 224x224x3 images.
++     """
++@@ -32,20 +32,28 @@ class StartingNetwork(torch.nn.Module):
++         x = F.relu(x)
++ 
++         x = self.fc4(x)
+++        x = F.softmax(x)
++ 
++         return x
++ 
++  
++ 
++-class CNN(nn.Module): #changed to resnet
+++class StartingNetwork(nn.Module): #changed to resnet
++     """
++     Basic CNN to pass the data through
++     """
++     def __init__(self):
++         super().__init__()
++-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
++-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
++-        self.resnet.eval() #//set on eval mode to freeze weights
+++        self.modified_resnet = models.resnet18()
+++        # Freeze model weights
+++        for param in self.modified_resnet.parameters():
+++            param.requires_grad = False
+++        
+++        print('pretrained weights fixed!')
+++
+++        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+++        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+++        # self.resnet.eval() #//set on eval mode to freeze weights
++ 
++         # #filter is 5, output channels is 6 (both can be changed)
++         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
++@@ -66,21 +74,21 @@ class CNN(nn.Module): #changed to resnet
++ 
++         # self.conv4 = nn.Conv2d(24, 48, 5)
++         # self.pool4 = nn.MaxPool2d(2,2)
++-
+++        #commit test
++         # #16 channels, not sure about 4x4
++-        self.fc = StartingNetwork(512, output_dim=5)
+++        self.modified_resnet.fc = fc(512, output_dim=5)
++ 
++     def forward(self, x):
++ 
++-        with torch.no_grad(): 
++-            x = self.resnet(x)#freeze the weight 
++-           #//use like normal but use no_grad
+++        # with torch.no_grad(): 
+++        #     x = self.resnet(x)#freeze the weight 
+++        #    #//use like normal but use no_grad
++ 
++-        # x = self.pool(F.relu(self.conv1(x)))
++-        # x = self.pool2(F.relu(self.conv2(x)))
++-        # x = self.pool3(F.relu(self.conv3(x)))
++-        # x = self.pool4(F.relu(self.conv4(x)))
+++        # # x = self.pool(F.relu(self.conv1(x)))
+++        # # x = self.pool2(F.relu(self.conv2(x)))
+++        # # x = self.pool3(F.relu(self.conv3(x)))
+++        # # x = self.pool4(F.relu(self.conv4(x)))
++ 
++-        #keep the fc layers unchanged 
++-        x = self.fc.forward(x)
+++        # #keep the fc layers unchanged 
+++        x = self.modified_resnet(x)
++         return x
++\ No newline at end of file
++diff --git a/train_functions/starting_train.py b/train_functions/starting_train.py
++index f3525b6..340b80d 100644
++--- a/train_functions/starting_train.py
+++++ b/train_functions/starting_train.py
++@@ -6,7 +6,7 @@ import wandb
++ # import sys
++ # sys.path.insert(1, '/content/projects-skeleton-code/networks')
++ # from StartingNetwork import CNN
++-
+++import time
++ #####contains:
++ #find_acc
++ #train
++diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
++new file mode 120000
++index 0000000..41fc0b7
++--- /dev/null
+++++ b/wandb/debug-internal.log
++@@ -0,0 +1 @@
+++run-20210709_025950-17nxirjr/logs/debug-internal.log
++\ No newline at end of file
++diff --git a/wandb/debug.log b/wandb/debug.log
++new file mode 120000
++index 0000000..e5769b9
++--- /dev/null
+++++ b/wandb/debug.log
++@@ -0,0 +1 @@
+++run-20210709_025950-17nxirjr/logs/debug.log
++\ No newline at end of file
++diff --git a/wandb/latest-run b/wandb/latest-run
++new file mode 120000
++index 0000000..b14aef4
++--- /dev/null
+++++ b/wandb/latest-run
++@@ -0,0 +1 @@
+++run-20210709_025950-17nxirjr
++\ No newline at end of file
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/code/main.py b/wandb/run-20210709_025823-1dgngst8/files/code/main.py
++new file mode 100644
++index 0000000..002bae9
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/code/main.py
++@@ -0,0 +1,64 @@
+++import argparse
+++
+++import os
+++import torch
+++#lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
+++
+++import constants
+++from datasets.StartingDataset import StartingDataset
+++from networks.StartingNetwork import StartingNetwork
+++from train_functions.starting_train import starting_train
+++from config import config
+++# os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
+++import importlib
+++# SUMMARIES_PATH = "training_summaries"
+++parser = argparse.ArgumentParser()
+++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
+++args = parser.parse_args()
+++# get experiment config
+++config_module = importlib.import_module(args.config_name)
+++config = config_module.config
+++
+++def main(config):
+++    # Get command line arguments
+++    # args = parse_arguments()
+++    #commit test
+++
+++    # Create path for training summaries
+++    # summary_path = None
+++    # if args.logdir is not None:
+++    #     summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
+++    #     os.makedirs(summary_path, exist_ok=True)
+++
+++    # TODO: Add GPU support. This line of code might be helpful.
+++    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+++
+++    # print("Summary path:", summary_path)
+++    print("Epochs:", config['epochs'])
+++    print("Batch size:", config['batch_size'])
+++
+++    # Initalize dataset and model. Then train the model!
+++    train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
+++    model = StartingNetwork().to(device)
+++    starting_train(
+++        train_loader=train_loader,
+++        valid_loader=valid_loader,
+++        network=model,
+++        num_epochs=config['epochs'],
+++        test = config['test'], 
+++        training_date = config['train_date']
+++    )
+++
+++
+++# def parse_arguments():
+++#     parser = argparse.ArgumentParser()
+++#     parser.add_argument("epochs", type=int, default=constants.EPOCHS)
+++#     parser.add_argument("batch_size", type=int, default=constants.BATCH_SIZE)
+++#     parser.add_argument("test", type=bool, default=constants.TEST)
+++#     # parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
+++#     # parser.add_argument("--logdir", type=str, default=None)
+++#     return parser.parse_args()
+++
+++
+++if __name__ == "__main__":
+++    main(config)
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/config.yaml b/wandb/run-20210709_025823-1dgngst8/files/config.yaml
++new file mode 100644
++index 0000000..259cdae
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/config.yaml
++@@ -0,0 +1,26 @@
+++wandb_version: 1
+++
+++_wandb:
+++  desc: null
+++  value:
+++    cli_version: 0.10.33
+++    code_path: code/main.py
+++    framework: torch
+++    is_jupyter_run: false
+++    is_kaggle_kernel: true
+++    python_version: 3.7.10
+++    t:
+++      1:
+++      - 1
+++      2:
+++      - 1
+++      3:
+++      - 1
+++      4: 3.7.10
+++      5: 0.10.33
+++      8:
+++      - 2
+++      - 5
+++lr:
+++  desc: null
+++  value: 0.01
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/output.log b/wandb/run-20210709_025823-1dgngst8/files/output.log
++new file mode 100644
++index 0000000..61c96e7
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/output.log
++@@ -0,0 +1,8 @@
+++Traceback (most recent call last):
+++  File "main.py", line 64, in <module>
+++    main(config)
+++  File "main.py", line 49, in main
+++    training_date = config['train_date']
+++  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 147, in starting_train
+++    start_time = time.time()
+++NameError: name 'time' is not defined
++\ No newline at end of file
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/requirements.txt b/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
++new file mode 100644
++index 0000000..1226f63
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
++@@ -0,0 +1,396 @@
+++absl-py==0.12.0
+++alabaster==0.7.12
+++albumentations==0.1.12
+++altair==4.1.0
+++appdirs==1.4.4
+++argon2-cffi==20.1.0
+++arviz==0.11.2
+++astor==0.8.1
+++astropy==4.2.1
+++astunparse==1.6.3
+++async-generator==1.10
+++atari-py==0.2.9
+++atomicwrites==1.4.0
+++attrs==21.2.0
+++audioread==2.1.9
+++autograd==1.3
+++babel==2.9.1
+++backcall==0.2.0
+++beautifulsoup4==4.6.3
+++bleach==3.3.0
+++blis==0.4.1
+++bokeh==2.3.2
+++bottleneck==1.3.2
+++branca==0.4.2
+++bs4==0.0.1
+++cachecontrol==0.12.6
+++cached-property==1.5.2
+++cachetools==4.2.2
+++catalogue==1.0.0
+++certifi==2021.5.30
+++cffi==1.14.5
+++cftime==1.5.0
+++chardet==3.0.4
+++click==7.1.2
+++cloudpickle==1.3.0
+++cmake==3.12.0
+++cmdstanpy==0.9.5
+++colorcet==2.0.6
+++colorlover==0.3.0
+++community==1.0.0b1
+++configparser==5.0.2
+++contextlib2==0.5.5
+++convertdate==2.3.2
+++coverage==3.7.1
+++coveralls==0.5
+++crcmod==1.7
+++cufflinks==0.17.3
+++cupy-cuda101==9.1.0
+++cvxopt==1.2.6
+++cvxpy==1.0.31
+++cycler==0.10.0
+++cymem==2.0.5
+++cython==0.29.23
+++daft==0.0.4
+++dask==2.12.0
+++datascience==0.10.6
+++debugpy==1.0.0
+++decorator==4.4.2
+++defusedxml==0.7.1
+++descartes==1.1.0
+++dill==0.3.4
+++distributed==1.25.3
+++dlib==19.18.0
+++dm-tree==0.1.6
+++docker-pycreds==0.4.0
+++docopt==0.6.2
+++docutils==0.17.1
+++dopamine-rl==1.0.5
+++earthengine-api==0.1.272
+++easydict==1.9
+++ecos==2.0.7.post1
+++editdistance==0.5.3
+++en-core-web-sm==2.2.5
+++entrypoints==0.3
+++ephem==4.0.0.2
+++et-xmlfile==1.1.0
+++fa2==0.3.5
+++fastai==1.0.61
+++fastdtw==0.3.4
+++fastprogress==1.0.0
+++fastrlock==0.6
+++fbprophet==0.7.1
+++feather-format==0.4.1
+++filelock==3.0.12
+++firebase-admin==4.4.0
+++fix-yahoo-finance==0.0.22
+++flask==1.1.4
+++flatbuffers==1.12
+++folium==0.8.3
+++future==0.16.0
+++gast==0.4.0
+++gdal==2.2.2
+++gdown==3.6.4
+++gensim==3.6.0
+++geographiclib==1.52
+++geopy==1.17.0
+++gin-config==0.4.0
+++gitdb==4.0.7
+++gitpython==3.1.18
+++glob2==0.7
+++google-api-core==1.26.3
+++google-api-python-client==1.12.8
+++google-auth-httplib2==0.0.4
+++google-auth-oauthlib==0.4.4
+++google-auth==1.32.1
+++google-cloud-bigquery-storage==1.1.0
+++google-cloud-bigquery==1.21.0
+++google-cloud-core==1.0.3
+++google-cloud-datastore==1.8.0
+++google-cloud-firestore==1.7.0
+++google-cloud-language==1.2.0
+++google-cloud-storage==1.18.1
+++google-cloud-translate==1.5.0
+++google-colab==1.0.0
+++google-pasta==0.2.0
+++google-resumable-media==0.4.1
+++google==2.0.3
+++googleapis-common-protos==1.53.0
+++googledrivedownloader==0.4
+++graphviz==0.10.1
+++greenlet==1.1.0
+++grpcio==1.34.1
+++gspread-dataframe==3.0.8
+++gspread==3.0.1
+++gym==0.17.3
+++h5py==3.1.0
+++heapdict==1.0.1
+++hijri-converter==2.1.3
+++holidays==0.10.5.2
+++holoviews==1.14.4
+++html5lib==1.0.1
+++httpimport==0.5.18
+++httplib2==0.17.4
+++httplib2shim==0.0.3
+++humanize==0.5.1
+++hyperopt==0.1.2
+++ideep4py==2.0.0.post3
+++idna==2.10
+++imageio==2.4.1
+++imagesize==1.2.0
+++imbalanced-learn==0.4.3
+++imblearn==0.0
+++imgaug==0.2.9
+++importlib-metadata==4.6.0
+++importlib-resources==5.2.0
+++imutils==0.5.4
+++inflect==2.1.0
+++iniconfig==1.1.1
+++install==1.3.4
+++intel-openmp==2021.3.0
+++intervaltree==2.1.0
+++ipykernel==4.10.1
+++ipython-genutils==0.2.0
+++ipython-sql==0.3.9
+++ipython==5.5.0
+++ipywidgets==7.6.3
+++itsdangerous==1.1.0
+++jax==0.2.13
+++jaxlib==0.1.66+cuda110
+++jdcal==1.4.1
+++jedi==0.18.0
+++jieba==0.42.1
+++jinja2==2.11.3
+++joblib==1.0.1
+++jpeg4py==0.1.4
+++jsonschema==2.6.0
+++jupyter-client==5.3.5
+++jupyter-console==5.2.0
+++jupyter-core==4.7.1
+++jupyter==1.0.0
+++jupyterlab-pygments==0.1.2
+++jupyterlab-widgets==1.0.0
+++kaggle==1.5.12
+++kapre==0.3.5
+++keras-nightly==2.5.0.dev2021032900
+++keras-preprocessing==1.1.2
+++keras-vis==0.4.1
+++keras==2.4.3
+++kiwisolver==1.3.1
+++korean-lunar-calendar==0.2.1
+++librosa==0.8.1
+++lightgbm==2.2.3
+++llvmlite==0.34.0
+++lmdb==0.99
+++lunarcalendar==0.0.9
+++lxml==4.2.6
+++markdown==3.3.4
+++markupsafe==2.0.1
+++matplotlib-inline==0.1.2
+++matplotlib-venn==0.11.6
+++matplotlib==3.2.2
+++missingno==0.4.2
+++mistune==0.8.4
+++mizani==0.6.0
+++mkl==2019.0
+++mlxtend==0.14.0
+++more-itertools==8.8.0
+++moviepy==0.2.3.5
+++mpmath==1.2.1
+++msgpack==1.0.2
+++multiprocess==0.70.12.2
+++multitasking==0.0.9
+++murmurhash==1.0.5
+++music21==5.5.0
+++natsort==5.5.0
+++nbclient==0.5.3
+++nbconvert==5.6.1
+++nbformat==5.1.3
+++nest-asyncio==1.5.1
+++netcdf4==1.5.7
+++networkx==2.5.1
+++nibabel==3.0.2
+++nltk==3.2.5
+++notebook==5.3.1
+++numba==0.51.2
+++numexpr==2.7.3
+++numpy==1.19.5
+++nvidia-ml-py3==7.352.0
+++oauth2client==4.1.3
+++oauthlib==3.1.1
+++okgrade==0.4.3
+++opencv-contrib-python==4.1.2.30
+++opencv-python==4.1.2.30
+++openpyxl==2.5.9
+++opt-einsum==3.3.0
+++osqp==0.6.2.post0
+++packaging==20.9
+++palettable==3.3.0
+++pandas-datareader==0.9.0
+++pandas-gbq==0.13.3
+++pandas-profiling==1.4.1
+++pandas==1.1.5
+++pandocfilters==1.4.3
+++panel==0.11.3
+++param==1.10.1
+++parso==0.8.2
+++pathlib==1.0.1
+++pathtools==0.1.2
+++patsy==0.5.1
+++pexpect==4.8.0
+++pickleshare==0.7.5
+++pillow==7.1.2
+++pip-tools==4.5.1
+++pip==19.3.1
+++plac==1.1.3
+++plotly==4.4.1
+++plotnine==0.6.0
+++pluggy==0.7.1
+++pooch==1.4.0
+++portpicker==1.3.9
+++prefetch-generator==1.0.1
+++preshed==3.0.5
+++prettytable==2.1.0
+++progressbar2==3.38.0
+++prometheus-client==0.11.0
+++promise==2.3
+++prompt-toolkit==1.0.18
+++protobuf==3.17.3
+++psutil==5.4.8
+++psycopg2==2.7.6.1
+++ptyprocess==0.7.0
+++py==1.10.0
+++pyarrow==3.0.0
+++pyasn1-modules==0.2.8
+++pyasn1==0.4.8
+++pycocotools==2.0.2
+++pycparser==2.20
+++pyct==0.4.8
+++pydata-google-auth==1.2.0
+++pydot-ng==2.0.0
+++pydot==1.3.0
+++pydotplus==2.0.2
+++pydrive==1.3.1
+++pyemd==0.5.1
+++pyerfa==2.0.0
+++pyglet==1.5.0
+++pygments==2.6.1
+++pygobject==3.26.1
+++pymc3==3.11.2
+++pymeeus==0.5.11
+++pymongo==3.11.4
+++pymystem3==0.2.0
+++pyopengl==3.1.5
+++pyparsing==2.4.7
+++pyrsistent==0.18.0
+++pysndfile==1.3.8
+++pysocks==1.7.1
+++pystan==2.19.1.1
+++pytest==3.6.4
+++python-apt==0.0.0
+++python-chess==0.23.11
+++python-dateutil==2.8.1
+++python-louvain==0.15
+++python-slugify==5.0.2
+++python-utils==2.5.6
+++pytz==2018.9
+++pyviz-comms==2.1.0
+++pywavelets==1.1.1
+++pyyaml==3.13
+++pyzmq==22.1.0
+++qdldl==0.1.5.post0
+++qtconsole==5.1.1
+++qtpy==1.9.0
+++regex==2019.12.20
+++requests-oauthlib==1.3.0
+++requests==2.23.0
+++resampy==0.2.2
+++retrying==1.3.3
+++rpy2==3.4.5
+++rsa==4.7.2
+++scikit-image==0.16.2
+++scikit-learn==0.22.2.post1
+++scipy==1.4.1
+++screen-resolution-extra==0.0.0
+++scs==2.1.4
+++seaborn==0.11.1
+++semver==2.13.0
+++send2trash==1.7.1
+++sentry-sdk==1.3.0
+++setuptools-git==1.2
+++setuptools==57.0.0
+++shapely==1.7.1
+++shortuuid==1.0.1
+++simplegeneric==0.8.1
+++six==1.15.0
+++sklearn-pandas==1.8.0
+++sklearn==0.0
+++smart-open==5.1.0
+++smmap==4.0.0
+++snowballstemmer==2.1.0
+++sortedcontainers==2.4.0
+++soundfile==0.10.3.post1
+++spacy==2.2.4
+++sphinx==1.8.5
+++sphinxcontrib-serializinghtml==1.1.5
+++sphinxcontrib-websupport==1.2.4
+++sqlalchemy==1.4.20
+++sqlparse==0.4.1
+++srsly==1.0.5
+++statsmodels==0.10.2
+++subprocess32==3.5.4
+++sympy==1.7.1
+++tables==3.4.4
+++tabulate==0.8.9
+++tblib==1.7.0
+++tensorboard-data-server==0.6.1
+++tensorboard-plugin-wit==1.8.0
+++tensorboard==2.5.0
+++tensorflow-datasets==4.0.1
+++tensorflow-estimator==2.5.0
+++tensorflow-gcs-config==2.5.0
+++tensorflow-hub==0.12.0
+++tensorflow-metadata==1.1.0
+++tensorflow-probability==0.13.0
+++tensorflow==2.5.0
+++termcolor==1.1.0
+++terminado==0.10.1
+++testpath==0.5.0
+++text-unidecode==1.3
+++textblob==0.15.3
+++theano-pymc==1.1.2
+++thinc==7.4.0
+++tifffile==2021.7.2
+++toml==0.10.2
+++toolz==0.11.1
+++torch==1.9.0+cu102
+++torchsummary==1.5.1
+++torchtext==0.10.0
+++torchvision==0.10.0+cu102
+++tornado==5.1.1
+++tqdm==4.41.1
+++traitlets==5.0.5
+++tweepy==3.10.0
+++typeguard==2.7.1
+++typing-extensions==3.7.4.3
+++tzlocal==1.5.1
+++uritemplate==3.0.1
+++urllib3==1.24.3
+++vega-datasets==0.9.0
+++wandb==0.10.33
+++wasabi==0.8.2
+++wcwidth==0.2.5
+++webencodings==0.5.1
+++werkzeug==1.0.1
+++wheel==0.36.2
+++widgetsnbextension==3.5.1
+++wordcloud==1.5.0
+++wrapt==1.12.1
+++xarray==0.18.2
+++xgboost==0.90
+++xkit==0.0.0
+++xlrd==1.1.0
+++xlwt==1.3.0
+++yellowbrick==0.9.1
+++zict==2.0.0
+++zipp==3.4.1
++\ No newline at end of file
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch b/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++new file mode 100644
++index 0000000..a8102de
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++@@ -0,0 +1,143 @@
+++diff --git a/main.py b/main.py
+++index edfbc3c..002bae9 100644
+++--- a/main.py
++++++ b/main.py
+++@@ -1,7 +1,7 @@
+++ import argparse
+++ 
+++ import os
+++-
++++import torch
+++ #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
+++ 
+++ import constants
+++@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
+++ from train_functions.starting_train import starting_train
+++ from config import config
+++ # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
+++-
++++import importlib
+++ # SUMMARIES_PATH = "training_summaries"
+++-
++++parser = argparse.ArgumentParser()
++++parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
++++args = parser.parse_args()
++++# get experiment config
++++config_module = importlib.import_module(args.config_name)
++++config = config_module.config
+++ 
+++ def main(config):
+++     # Get command line arguments
+++     # args = parse_arguments()
+++-    
++++    #commit test
+++ 
+++     # Create path for training summaries
+++     # summary_path = None
+++@@ -34,13 +39,14 @@ def main(config):
+++ 
+++     # Initalize dataset and model. Then train the model!
+++     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
+++-    model = StartingNetwork()
++++    model = StartingNetwork().to(device)
+++     starting_train(
+++         train_loader=train_loader,
+++         valid_loader=valid_loader,
+++         network=model,
+++         num_epochs=config['epochs'],
+++-        test = config['test']
++++        test = config['test'], 
++++        training_date = config['train_date']
+++     )
+++ 
+++ 
+++@@ -55,4 +61,4 @@ def main(config):
+++ 
+++ 
+++ if __name__ == "__main__":
+++-    main()
++++    main(config)
+++diff --git a/networks/StartingNetwork.py b/networks/StartingNetwork.py
+++index cb87187..28db092 100644
+++--- a/networks/StartingNetwork.py
++++++ b/networks/StartingNetwork.py
+++@@ -3,10 +3,10 @@ import torch.nn as nn
+++ import torch.nn.functional as F
+++ import torchvision
+++ import matplotlib.pyplot as plt
+++-
++++import torchvision.models as models
+++ #600x800
+++ 
+++-class StartingNetwork(torch.nn.Module):
++++class fc(torch.nn.Module):
+++     """
+++     Basic logistic regression on 224x224x3 images.
+++     """
+++@@ -32,20 +32,28 @@ class StartingNetwork(torch.nn.Module):
+++         x = F.relu(x)
+++ 
+++         x = self.fc4(x)
++++        x = F.softmax(x)
+++ 
+++         return x
+++ 
+++  
+++ 
+++-class CNN(nn.Module): #changed to resnet
++++class StartingNetwork(nn.Module): #changed to resnet
+++     """
+++     Basic CNN to pass the data through
+++     """
+++     def __init__(self):
+++         super().__init__()
+++-        self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
+++-        self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
+++-        self.resnet.eval() #//set on eval mode to freeze weights
++++        self.modified_resnet = models.resnet18()
++++        # Freeze model weights
++++        for param in self.modified_resnet.parameters():
++++            param.requires_grad = False
++++        
++++        print('pretrained weights fixed!')
++++
++++        # self.resnet = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
++++        # self.resnet = torch.nn.Sequential(*(list(self.resnet.children())[:-1])) #//cut off last layer
++++        # self.resnet.eval() #//set on eval mode to freeze weights
+++ 
+++         # #filter is 5, output channels is 6 (both can be changed)
+++         # self.conv1 = nn.Conv2d(input_channels, 6, 5)
+++@@ -66,21 +74,21 @@ class CNN(nn.Module): #changed to resnet
+++ 
+++         # self.conv4 = nn.Conv2d(24, 48, 5)
+++         # self.pool4 = nn.MaxPool2d(2,2)
+++-
++++        #commit test
+++         # #16 channels, not sure about 4x4
+++-        self.fc = StartingNetwork(512, output_dim=5)
++++        self.modified_resnet.fc = fc(512, output_dim=5)
+++ 
+++     def forward(self, x):
+++ 
+++-        with torch.no_grad(): 
+++-            x = self.resnet(x)#freeze the weight 
+++-           #//use like normal but use no_grad
++++        # with torch.no_grad(): 
++++        #     x = self.resnet(x)#freeze the weight 
++++        #    #//use like normal but use no_grad
+++ 
+++-        # x = self.pool(F.relu(self.conv1(x)))
+++-        # x = self.pool2(F.relu(self.conv2(x)))
+++-        # x = self.pool3(F.relu(self.conv3(x)))
+++-        # x = self.pool4(F.relu(self.conv4(x)))
++++        # # x = self.pool(F.relu(self.conv1(x)))
++++        # # x = self.pool2(F.relu(self.conv2(x)))
++++        # # x = self.pool3(F.relu(self.conv3(x)))
++++        # # x = self.pool4(F.relu(self.conv4(x)))
+++ 
+++-        #keep the fc layers unchanged 
+++-        x = self.fc.forward(x)
++++        # #keep the fc layers unchanged 
++++        x = self.modified_resnet(x)
+++         return x
+++\ No newline at end of file
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json b/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
++new file mode 100644
++index 0000000..6dcb9d5
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
++@@ -0,0 +1,26 @@
+++{
+++    "os": "Linux-5.4.104+-x86_64-with-Ubuntu-18.04-bionic",
+++    "python": "3.7.10",
+++    "heartbeatAt": "2021-07-09T02:58:27.904556",
+++    "startedAt": "2021-07-09T02:58:23.825141",
+++    "docker": null,
+++    "gpu": "Tesla T4",
+++    "gpu_count": 1,
+++    "cpu_count": 2,
+++    "cuda": "11.0.228",
+++    "args": [
+++        "config"
+++    ],
+++    "state": "running",
+++    "program": "main.py",
+++    "codePath": "main.py",
+++    "git": {
+++        "remote": "https://github.com/candicexxx-droid/projects-skeleton-code.git",
+++        "commit": "e6ba3a6170d4aadbfb55ad5bec77d45bec38fa0a"
+++    },
+++    "email": "caixy.candice2016@outlook.com",
+++    "root": "/content/projects-skeleton-code",
+++    "host": "7222cdb1f6d1",
+++    "username": "root",
+++    "executable": "/usr/bin/python3"
+++}
++diff --git a/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json b/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
++new file mode 100644
++index 0000000..9e26dfe
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
++@@ -0,0 +1 @@
+++{}
++\ No newline at end of file
++diff --git a/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log b/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
++new file mode 100644
++index 0000000..ec81507
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
++@@ -0,0 +1,149 @@
+++2021-07-09 02:58:24,629 INFO    MainThread:771 [internal.py:wandb_internal():91] W&B internal server running at pid: 771, started at: 2021-07-09 02:58:24.629673
+++2021-07-09 02:58:24,632 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: check_version
+++2021-07-09 02:58:24,632 INFO    WriterThread:771 [datastore.py:open_for_write():80] open: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
+++2021-07-09 02:58:24,633 DEBUG   SenderThread:771 [sender.py:send():179] send: header
+++2021-07-09 02:58:24,633 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: check_version
+++2021-07-09 02:58:24,670 DEBUG   SenderThread:771 [sender.py:send():179] send: run
+++2021-07-09 02:58:24,780 INFO    SenderThread:771 [dir_watcher.py:__init__():168] watching files in: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files
+++2021-07-09 02:58:24,780 INFO    SenderThread:771 [sender.py:_start_run_threads():719] run started: 1dgngst8 with start time 1625799503
+++2021-07-09 02:58:24,781 DEBUG   SenderThread:771 [sender.py:send():179] send: summary
+++2021-07-09 02:58:24,781 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: run_start
+++2021-07-09 02:58:24,781 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+++2021-07-09 02:58:25,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
+++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:__init__():39] meta init
+++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:__init__():53] meta init done
+++2021-07-09 02:58:27,904 DEBUG   HandlerThread:771 [meta.py:probe():210] probe
+++2021-07-09 02:58:27,911 DEBUG   HandlerThread:771 [meta.py:_setup_git():200] setup git
+++2021-07-09 02:58:27,933 DEBUG   HandlerThread:771 [meta.py:_setup_git():207] setup git done
+++2021-07-09 02:58:27,933 DEBUG   HandlerThread:771 [meta.py:_save_code():89] save code
+++2021-07-09 02:58:27,941 DEBUG   HandlerThread:771 [meta.py:_save_code():110] save code done
+++2021-07-09 02:58:27,941 DEBUG   HandlerThread:771 [meta.py:_save_patches():127] save patches
+++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_patches():169] save patches done
+++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_pip():57] save pip
+++2021-07-09 02:58:27,988 DEBUG   HandlerThread:771 [meta.py:_save_pip():71] save pip done
+++2021-07-09 02:58:27,989 DEBUG   HandlerThread:771 [meta.py:probe():252] probe done
+++2021-07-09 02:58:27,991 DEBUG   SenderThread:771 [sender.py:send():179] send: files
+++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-metadata.json with policy now
+++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file code/main.py with policy now
+++2021-07-09 02:58:27,992 INFO    SenderThread:771 [sender.py:_save_file():841] saving file upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch with policy now
+++2021-07-09 02:58:27,999 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: stop_status
+++2021-07-09 02:58:27,999 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: stop_status
+++2021-07-09 02:58:28,070 DEBUG   SenderThread:771 [sender.py:send():179] send: config
+++2021-07-09 02:58:28,080 INFO    Thread-12 :771 [upload_job.py:push():117] Skipped uploading /tmp/tmptbs08s9ewandb/1fgulkpm-code/main.py
+++2021-07-09 02:58:28,496 INFO    Thread-11 :771 [upload_job.py:push():137] Uploaded file /tmp/tmptbs08s9ewandb/315iz1n4-wandb-metadata.json
+++2021-07-09 02:58:28,532 INFO    Thread-13 :771 [upload_job.py:push():137] Uploaded file /tmp/tmptbs08s9ewandb/221gc3j3-upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+++2021-07-09 02:58:28,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json
+++2021-07-09 02:58:28,782 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
+++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
+++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code/main.py
+++2021-07-09 02:58:28,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code
+++2021-07-09 02:58:30,503 DEBUG   SenderThread:771 [sender.py:send():179] send: telemetry
+++2021-07-09 02:58:30,503 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:30,504 DEBUG   SenderThread:771 [sender.py:send():179] send: exit
+++2021-07-09 02:58:30,504 INFO    SenderThread:771 [sender.py:send_exit():287] handling exit code: 1
+++2021-07-09 02:58:30,504 INFO    SenderThread:771 [sender.py:send_exit():295] send defer
+++2021-07-09 02:58:30,504 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:30,505 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,505 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 0
+++2021-07-09 02:58:30,505 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,505 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 0
+++2021-07-09 02:58:30,505 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 1
+++2021-07-09 02:58:30,506 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,506 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 1
+++2021-07-09 02:58:30,537 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,537 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 1
+++2021-07-09 02:58:30,537 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 2
+++2021-07-09 02:58:30,537 DEBUG   SenderThread:771 [sender.py:send():179] send: stats
+++2021-07-09 02:58:30,538 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,538 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 2
+++2021-07-09 02:58:30,538 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,538 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 2
+++2021-07-09 02:58:30,538 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 3
+++2021-07-09 02:58:30,538 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,538 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 3
+++2021-07-09 02:58:30,539 DEBUG   SenderThread:771 [sender.py:send():179] send: summary
+++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+++2021-07-09 02:58:30,539 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 3
+++2021-07-09 02:58:30,539 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 4
+++2021-07-09 02:58:30,539 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,539 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 4
+++2021-07-09 02:58:30,540 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,540 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 4
+++2021-07-09 02:58:30,606 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:30,619 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 5
+++2021-07-09 02:58:30,619 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:30,619 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,619 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 5
+++2021-07-09 02:58:30,620 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,620 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 5
+++2021-07-09 02:58:30,620 INFO    SenderThread:771 [dir_watcher.py:finish():282] shutting down directory watcher
+++2021-07-09 02:58:30,720 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:30,783 INFO    Thread-8  :771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
+++2021-07-09 02:58:30,783 INFO    SenderThread:771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
+++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml
+++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():312] scan: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files
+++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml config.yaml
+++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-metadata.json wandb-metadata.json
+++2021-07-09 02:58:30,784 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt requirements.txt
+++2021-07-09 02:58:30,785 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log output.log
+++2021-07-09 02:58:30,790 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json wandb-summary.json
+++2021-07-09 02:58:30,790 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+++2021-07-09 02:58:30,791 INFO    SenderThread:771 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/code/main.py code/main.py
+++2021-07-09 02:58:30,791 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 6
+++2021-07-09 02:58:30,791 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:30,791 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:30,792 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 6
+++2021-07-09 02:58:30,792 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:30,792 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 6
+++2021-07-09 02:58:30,792 INFO    SenderThread:771 [file_pusher.py:finish():177] shutting down file pusher
+++2021-07-09 02:58:30,893 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:30,893 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:30,994 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:30,995 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,068 INFO    Thread-15 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/requirements.txt
+++2021-07-09 02:58:31,096 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,096 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,110 INFO    Thread-16 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/output.log
+++2021-07-09 02:58:31,117 INFO    Thread-17 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/wandb-summary.json
+++2021-07-09 02:58:31,198 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,198 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,299 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,299 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,347 INFO    Thread-14 :771 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/files/config.yaml
+++2021-07-09 02:58:31,400 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,401 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,502 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,502 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,547 INFO    Thread-7  :771 [sender.py:transition_state():308] send defer: 7
+++2021-07-09 02:58:31,548 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:31,548 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 7
+++2021-07-09 02:58:31,548 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:31,548 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 7
+++2021-07-09 02:58:31,603 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,665 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 8
+++2021-07-09 02:58:31,666 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,666 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:31,666 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 8
+++2021-07-09 02:58:31,667 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:31,667 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 8
+++2021-07-09 02:58:31,667 INFO    SenderThread:771 [sender.py:transition_state():308] send defer: 9
+++2021-07-09 02:58:31,667 DEBUG   SenderThread:771 [sender.py:send():179] send: final
+++2021-07-09 02:58:31,668 DEBUG   SenderThread:771 [sender.py:send():179] send: footer
+++2021-07-09 02:58:31,668 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: defer
+++2021-07-09 02:58:31,668 INFO    HandlerThread:771 [handler.py:handle_request_defer():141] handle defer: 9
+++2021-07-09 02:58:31,668 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: defer
+++2021-07-09 02:58:31,668 INFO    SenderThread:771 [sender.py:send_request_defer():304] handle sender defer: 9
+++2021-07-09 02:58:31,767 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: poll_exit
+++2021-07-09 02:58:31,767 DEBUG   SenderThread:771 [sender.py:send_request():193] send_request: poll_exit
+++2021-07-09 02:58:31,767 INFO    SenderThread:771 [file_pusher.py:join():182] waiting for file pusher
+++2021-07-09 02:58:31,769 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: get_summary
+++2021-07-09 02:58:31,769 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: sampled_history
+++2021-07-09 02:58:31,770 DEBUG   HandlerThread:771 [handler.py:handle_request():124] handle_request: shutdown
+++2021-07-09 02:58:31,770 INFO    HandlerThread:771 [handler.py:finish():638] shutting down handler
+++2021-07-09 02:58:32,667 INFO    WriterThread:771 [datastore.py:close():288] close: /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
+++2021-07-09 02:58:32,768 INFO    SenderThread:771 [sender.py:finish():945] shutting down sender
+++2021-07-09 02:58:32,768 INFO    SenderThread:771 [file_pusher.py:finish():177] shutting down file pusher
+++2021-07-09 02:58:32,768 INFO    SenderThread:771 [file_pusher.py:join():182] waiting for file pusher
+++2021-07-09 02:58:32,770 INFO    MainThread:771 [internal.py:handle_exit():78] Internal process exited
++diff --git a/wandb/run-20210709_025823-1dgngst8/logs/debug.log b/wandb/run-20210709_025823-1dgngst8/logs/debug.log
++new file mode 100644
++index 0000000..4e3bea4
++--- /dev/null
+++++ b/wandb/run-20210709_025823-1dgngst8/logs/debug.log
++@@ -0,0 +1,151 @@
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_setup.py:_flush():69] setting env: {}
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_setup.py:_flush():69] setting login settings: {}
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:_log_setup():337] Logging user logs to /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/logs/debug.log
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:_log_setup():338] Logging internal logs to /content/projects-skeleton-code/wandb/run-20210709_025823-1dgngst8/logs/debug-internal.log
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:init():370] calling init triggers
+++2021-07-09 02:58:23,826 INFO    MainThread:755 [wandb_init.py:init():377] wandb.init called with sweep_config: {}
+++config: {}
+++2021-07-09 02:58:23,827 INFO    MainThread:755 [wandb_init.py:init():419] starting backend
+++2021-07-09 02:58:23,827 INFO    MainThread:755 [backend.py:_multiprocessing_setup():72] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+++2021-07-09 02:58:23,925 INFO    MainThread:755 [backend.py:ensure_launched():135] starting backend process...
+++2021-07-09 02:58:23,956 INFO    MainThread:755 [backend.py:ensure_launched():140] started backend process with pid: 771
+++2021-07-09 02:58:23,958 INFO    MainThread:755 [wandb_init.py:init():424] backend started and connected
+++2021-07-09 02:58:23,961 INFO    MainThread:755 [wandb_init.py:init():472] updated telemetry
+++2021-07-09 02:58:23,962 INFO    MainThread:755 [wandb_init.py:init():491] communicating current version
+++2021-07-09 02:58:24,669 INFO    MainThread:755 [wandb_init.py:init():496] got version response 
+++2021-07-09 02:58:24,669 INFO    MainThread:755 [wandb_init.py:init():504] communicating run to backend with 30 second timeout
+++2021-07-09 02:58:24,780 INFO    MainThread:755 [wandb_init.py:init():529] starting run threads in backend
+++2021-07-09 02:58:27,996 INFO    MainThread:755 [wandb_run.py:_console_start():1623] atexit reg
+++2021-07-09 02:58:27,997 INFO    MainThread:755 [wandb_run.py:_redirect():1497] redirect: SettingsConsole.REDIRECT
+++2021-07-09 02:58:27,997 INFO    MainThread:755 [wandb_run.py:_redirect():1502] Redirecting console.
+++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_run.py:_redirect():1558] Redirects installed.
+++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_init.py:init():554] run started, returning control to user process
+++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_config.py:__setitem__():141] config set lr = 0.01 - <bound method Run._config_callback of <wandb.sdk.wandb_run.Run object at 0x7f346ec3ab10>>
+++2021-07-09 02:58:27,999 INFO    MainThread:755 [wandb_run.py:_config_callback():872] config_cb lr 0.01 None
+++2021-07-09 02:58:28,000 INFO    MainThread:755 [wandb_watch.py:watch():40] Watching
+++2021-07-09 02:58:28,002 INFO    MainThread:755 [wandb_run.py:_atexit_cleanup():1593] got exitcode: 1
+++2021-07-09 02:58:28,002 INFO    MainThread:755 [wandb_run.py:_restore():1565] restore
+++2021-07-09 02:58:30,505 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 1
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 7635
+++  total_bytes: 7635
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:30,619 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 1
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 7635
+++  total_bytes: 7635
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:30,792 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 7635
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:30,894 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15079
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:30,995 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,097 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,198 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,300 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,401 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,503 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,666 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:31,768 INFO    MainThread:755 [wandb_run.py:_wait_for_finish():1715] got exit ret: done: true
+++exit_result {
+++}
+++file_counts {
+++  wandb_count: 5
+++  other_count: 2
+++}
+++pusher_stats {
+++  uploaded_bytes: 15418
+++  total_bytes: 15418
+++  deduped_bytes: 2255
+++}
+++
+++2021-07-09 02:58:33,051 INFO    MainThread:755 [wandb_run.py:_show_files():1937] logging synced files
++diff --git a/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb b/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb
++new file mode 100644
++index 0000000..8a4237d
++Binary files /dev/null and b/wandb/run-20210709_025823-1dgngst8/run-1dgngst8.wandb differ
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/wandb-metadata.json b/wandb/run-20210709_025950-17nxirjr/files/wandb-metadata.json
+new file mode 100644
+index 0000000..194571b
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/wandb-metadata.json
+@@ -0,0 +1,26 @@
++{
++    "os": "Linux-5.4.104+-x86_64-with-Ubuntu-18.04-bionic",
++    "python": "3.7.10",
++    "heartbeatAt": "2021-07-09T02:59:52.986484",
++    "startedAt": "2021-07-09T02:59:50.851606",
++    "docker": null,
++    "gpu": "Tesla T4",
++    "gpu_count": 1,
++    "cpu_count": 2,
++    "cuda": "11.0.228",
++    "args": [
++        "config"
++    ],
++    "state": "running",
++    "program": "main.py",
++    "codePath": "main.py",
++    "git": {
++        "remote": "https://github.com/candicexxx-droid/projects-skeleton-code.git",
++        "commit": "a50ca04db2780715f64fb3de097e82c7750c6ad2"
++    },
++    "email": "caixy.candice2016@outlook.com",
++    "root": "/content/projects-skeleton-code",
++    "host": "7222cdb1f6d1",
++    "username": "root",
++    "executable": "/usr/bin/python3"
++}
+diff --git a/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json b/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/wandb/run-20210709_025950-17nxirjr/logs/debug-internal.log b/wandb/run-20210709_025950-17nxirjr/logs/debug-internal.log
+new file mode 100644
+index 0000000..1144847
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/logs/debug-internal.log
+@@ -0,0 +1,150 @@
++2021-07-09 02:59:51,637 INFO    MainThread:866 [internal.py:wandb_internal():91] W&B internal server running at pid: 866, started at: 2021-07-09 02:59:51.637679
++2021-07-09 02:59:51,640 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: check_version
++2021-07-09 02:59:51,641 INFO    WriterThread:866 [datastore.py:open_for_write():80] open: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/run-17nxirjr.wandb
++2021-07-09 02:59:51,641 DEBUG   SenderThread:866 [sender.py:send():179] send: header
++2021-07-09 02:59:51,641 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: check_version
++2021-07-09 02:59:51,671 DEBUG   SenderThread:866 [sender.py:send():179] send: run
++2021-07-09 02:59:51,787 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: run_start
++2021-07-09 02:59:51,788 INFO    SenderThread:866 [dir_watcher.py:__init__():168] watching files in: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files
++2021-07-09 02:59:51,788 INFO    SenderThread:866 [sender.py:_start_run_threads():719] run started: 17nxirjr with start time 1625799590
++2021-07-09 02:59:51,788 DEBUG   SenderThread:866 [sender.py:send():179] send: summary
++2021-07-09 02:59:51,788 INFO    SenderThread:866 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
++2021-07-09 02:59:52,789 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json
++2021-07-09 02:59:52,986 DEBUG   HandlerThread:866 [meta.py:__init__():39] meta init
++2021-07-09 02:59:52,986 DEBUG   HandlerThread:866 [meta.py:__init__():53] meta init done
++2021-07-09 02:59:52,986 DEBUG   HandlerThread:866 [meta.py:probe():210] probe
++2021-07-09 02:59:52,993 DEBUG   HandlerThread:866 [meta.py:_setup_git():200] setup git
++2021-07-09 02:59:53,015 DEBUG   HandlerThread:866 [meta.py:_setup_git():207] setup git done
++2021-07-09 02:59:53,016 DEBUG   HandlerThread:866 [meta.py:_save_code():89] save code
++2021-07-09 02:59:53,022 DEBUG   HandlerThread:866 [meta.py:_save_code():110] save code done
++2021-07-09 02:59:53,022 DEBUG   HandlerThread:866 [meta.py:_save_patches():127] save patches
++2021-07-09 02:59:53,076 DEBUG   HandlerThread:866 [meta.py:_save_patches():169] save patches done
++2021-07-09 02:59:53,076 DEBUG   HandlerThread:866 [meta.py:_save_pip():57] save pip
++2021-07-09 02:59:53,077 DEBUG   HandlerThread:866 [meta.py:_save_pip():71] save pip done
++2021-07-09 02:59:53,077 DEBUG   HandlerThread:866 [meta.py:probe():252] probe done
++2021-07-09 02:59:53,080 DEBUG   SenderThread:866 [sender.py:send():179] send: files
++2021-07-09 02:59:53,080 INFO    SenderThread:866 [sender.py:_save_file():841] saving file wandb-metadata.json with policy now
++2021-07-09 02:59:53,081 INFO    SenderThread:866 [sender.py:_save_file():841] saving file code/main.py with policy now
++2021-07-09 02:59:53,081 INFO    SenderThread:866 [sender.py:_save_file():841] saving file diff.patch with policy now
++2021-07-09 02:59:53,081 INFO    SenderThread:866 [sender.py:_save_file():841] saving file upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch with policy now
++2021-07-09 02:59:53,088 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: stop_status
++2021-07-09 02:59:53,089 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: stop_status
++2021-07-09 02:59:53,166 DEBUG   SenderThread:866 [sender.py:send():179] send: config
++2021-07-09 02:59:53,179 INFO    Thread-12 :866 [upload_job.py:push():117] Skipped uploading /tmp/tmpztx3gomxwandb/4otjqrlp-code/main.py
++2021-07-09 02:59:53,395 INFO    Thread-14 :866 [upload_job.py:push():137] Uploaded file /tmp/tmpztx3gomxwandb/21oof5xy-upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:59:53,442 INFO    Thread-13 :866 [upload_job.py:push():137] Uploaded file /tmp/tmpztx3gomxwandb/3h6qmbem-diff.patch
++2021-07-09 02:59:53,453 INFO    Thread-11 :866 [upload_job.py:push():137] Uploaded file /tmp/tmpztx3gomxwandb/34o61mjc-wandb-metadata.json
++2021-07-09 02:59:53,788 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/diff.patch
++2021-07-09 02:59:53,789 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-metadata.json
++2021-07-09 02:59:53,789 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/code/main.py
++2021-07-09 02:59:53,789 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/output.log
++2021-07-09 02:59:53,789 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/requirements.txt
++2021-07-09 02:59:53,790 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:59:53,790 INFO    Thread-8  :866 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/code
++2021-07-09 02:59:57,790 INFO    Thread-8  :866 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/output.log
++2021-07-09 02:59:58,095 DEBUG   SenderThread:866 [sender.py:send():179] send: telemetry
++2021-07-09 02:59:58,095 DEBUG   SenderThread:866 [sender.py:send():179] send: exit
++2021-07-09 02:59:58,095 INFO    SenderThread:866 [sender.py:send_exit():287] handling exit code: 1
++2021-07-09 02:59:58,096 INFO    SenderThread:866 [sender.py:send_exit():295] send defer
++2021-07-09 02:59:58,096 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:58,096 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:58,097 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,097 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 0
++2021-07-09 02:59:58,097 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,097 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 0
++2021-07-09 02:59:58,097 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 1
++2021-07-09 02:59:58,098 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,098 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 1
++2021-07-09 02:59:58,127 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,127 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 1
++2021-07-09 02:59:58,127 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 2
++2021-07-09 02:59:58,127 DEBUG   SenderThread:866 [sender.py:send():179] send: stats
++2021-07-09 02:59:58,129 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,129 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 2
++2021-07-09 02:59:58,130 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,130 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 2
++2021-07-09 02:59:58,130 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 3
++2021-07-09 02:59:58,130 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,130 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 3
++2021-07-09 02:59:58,130 DEBUG   SenderThread:866 [sender.py:send():179] send: summary
++2021-07-09 02:59:58,131 INFO    SenderThread:866 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
++2021-07-09 02:59:58,131 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,131 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 3
++2021-07-09 02:59:58,131 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 4
++2021-07-09 02:59:58,131 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,131 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 4
++2021-07-09 02:59:58,131 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,131 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 4
++2021-07-09 02:59:58,198 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:58,208 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 5
++2021-07-09 02:59:58,208 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:58,209 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,209 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 5
++2021-07-09 02:59:58,209 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,209 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 5
++2021-07-09 02:59:58,209 INFO    SenderThread:866 [dir_watcher.py:finish():282] shutting down directory watcher
++2021-07-09 02:59:58,310 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:58,790 INFO    Thread-8  :866 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json
++2021-07-09 02:59:58,791 INFO    SenderThread:866 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/output.log
++2021-07-09 02:59:58,791 INFO    SenderThread:866 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/config.yaml
++2021-07-09 02:59:58,791 INFO    SenderThread:866 [dir_watcher.py:finish():312] scan: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files
++2021-07-09 02:59:58,792 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/config.yaml config.yaml
++2021-07-09 02:59:58,792 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-metadata.json wandb-metadata.json
++2021-07-09 02:59:58,792 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/requirements.txt requirements.txt
++2021-07-09 02:59:58,795 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/output.log output.log
++2021-07-09 02:59:58,796 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json wandb-summary.json
++2021-07-09 02:59:58,798 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/diff.patch diff.patch
++2021-07-09 02:59:58,801 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
++2021-07-09 02:59:58,802 INFO    SenderThread:866 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/code/main.py code/main.py
++2021-07-09 02:59:58,802 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 6
++2021-07-09 02:59:58,802 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:58,806 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:58,806 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 6
++2021-07-09 02:59:58,807 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:58,807 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 6
++2021-07-09 02:59:58,807 INFO    SenderThread:866 [file_pusher.py:finish():177] shutting down file pusher
++2021-07-09 02:59:58,906 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:58,907 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,008 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,008 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,072 INFO    Thread-15 :866 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/config.yaml
++2021-07-09 02:59:59,086 INFO    Thread-18 :866 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/wandb-summary.json
++2021-07-09 02:59:59,096 INFO    Thread-16 :866 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/requirements.txt
++2021-07-09 02:59:59,109 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,110 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,142 INFO    Thread-17 :866 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/files/output.log
++2021-07-09 02:59:59,211 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,211 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,312 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,312 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,342 INFO    Thread-7  :866 [sender.py:transition_state():308] send defer: 7
++2021-07-09 02:59:59,343 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:59,343 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 7
++2021-07-09 02:59:59,343 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:59,343 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 7
++2021-07-09 02:59:59,414 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,435 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 8
++2021-07-09 02:59:59,435 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,436 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:59,436 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 8
++2021-07-09 02:59:59,436 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:59,436 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 8
++2021-07-09 02:59:59,436 INFO    SenderThread:866 [sender.py:transition_state():308] send defer: 9
++2021-07-09 02:59:59,437 DEBUG   SenderThread:866 [sender.py:send():179] send: final
++2021-07-09 02:59:59,437 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: defer
++2021-07-09 02:59:59,437 DEBUG   SenderThread:866 [sender.py:send():179] send: footer
++2021-07-09 02:59:59,437 INFO    HandlerThread:866 [handler.py:handle_request_defer():141] handle defer: 9
++2021-07-09 02:59:59,438 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: defer
++2021-07-09 02:59:59,438 INFO    SenderThread:866 [sender.py:send_request_defer():304] handle sender defer: 9
++2021-07-09 02:59:59,537 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: poll_exit
++2021-07-09 02:59:59,537 DEBUG   SenderThread:866 [sender.py:send_request():193] send_request: poll_exit
++2021-07-09 02:59:59,537 INFO    SenderThread:866 [file_pusher.py:join():182] waiting for file pusher
++2021-07-09 02:59:59,538 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: get_summary
++2021-07-09 02:59:59,539 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: sampled_history
++2021-07-09 02:59:59,539 DEBUG   HandlerThread:866 [handler.py:handle_request():124] handle_request: shutdown
++2021-07-09 02:59:59,540 INFO    HandlerThread:866 [handler.py:finish():638] shutting down handler
++2021-07-09 03:00:00,437 INFO    WriterThread:866 [datastore.py:close():288] close: /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/run-17nxirjr.wandb
++2021-07-09 03:00:00,537 INFO    SenderThread:866 [sender.py:finish():945] shutting down sender
++2021-07-09 03:00:00,537 INFO    SenderThread:866 [file_pusher.py:finish():177] shutting down file pusher
++2021-07-09 03:00:00,537 INFO    SenderThread:866 [file_pusher.py:join():182] waiting for file pusher
++2021-07-09 03:00:00,539 INFO    MainThread:866 [internal.py:handle_exit():78] Internal process exited
+diff --git a/wandb/run-20210709_025950-17nxirjr/logs/debug.log b/wandb/run-20210709_025950-17nxirjr/logs/debug.log
+new file mode 100644
+index 0000000..6059e87
+--- /dev/null
++++ b/wandb/run-20210709_025950-17nxirjr/logs/debug.log
+@@ -0,0 +1,131 @@
++2021-07-09 02:59:50,852 INFO    MainThread:850 [wandb_setup.py:_flush():69] setting env: {}
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_setup.py:_flush():69] setting login settings: {}
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_init.py:_log_setup():337] Logging user logs to /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/logs/debug.log
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_init.py:_log_setup():338] Logging internal logs to /content/projects-skeleton-code/wandb/run-20210709_025950-17nxirjr/logs/debug-internal.log
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_init.py:init():370] calling init triggers
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_init.py:init():377] wandb.init called with sweep_config: {}
++config: {}
++2021-07-09 02:59:50,853 INFO    MainThread:850 [wandb_init.py:init():419] starting backend
++2021-07-09 02:59:50,853 INFO    MainThread:850 [backend.py:_multiprocessing_setup():72] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
++2021-07-09 02:59:50,940 INFO    MainThread:850 [backend.py:ensure_launched():135] starting backend process...
++2021-07-09 02:59:50,981 INFO    MainThread:850 [backend.py:ensure_launched():140] started backend process with pid: 866
++2021-07-09 02:59:50,984 INFO    MainThread:850 [wandb_init.py:init():424] backend started and connected
++2021-07-09 02:59:50,987 INFO    MainThread:850 [wandb_init.py:init():472] updated telemetry
++2021-07-09 02:59:50,988 INFO    MainThread:850 [wandb_init.py:init():491] communicating current version
++2021-07-09 02:59:51,670 INFO    MainThread:850 [wandb_init.py:init():496] got version response 
++2021-07-09 02:59:51,670 INFO    MainThread:850 [wandb_init.py:init():504] communicating run to backend with 30 second timeout
++2021-07-09 02:59:51,786 INFO    MainThread:850 [wandb_init.py:init():529] starting run threads in backend
++2021-07-09 02:59:53,084 INFO    MainThread:850 [wandb_run.py:_console_start():1623] atexit reg
++2021-07-09 02:59:53,085 INFO    MainThread:850 [wandb_run.py:_redirect():1497] redirect: SettingsConsole.REDIRECT
++2021-07-09 02:59:53,085 INFO    MainThread:850 [wandb_run.py:_redirect():1502] Redirecting console.
++2021-07-09 02:59:53,087 INFO    MainThread:850 [wandb_run.py:_redirect():1558] Redirects installed.
++2021-07-09 02:59:53,087 INFO    MainThread:850 [wandb_init.py:init():554] run started, returning control to user process
++2021-07-09 02:59:53,087 INFO    MainThread:850 [wandb_config.py:__setitem__():141] config set lr = 0.01 - <bound method Run._config_callback of <wandb.sdk.wandb_run.Run object at 0x7fb0f3447890>>
++2021-07-09 02:59:53,087 INFO    MainThread:850 [wandb_run.py:_config_callback():872] config_cb lr 0.01 None
++2021-07-09 02:59:53,088 INFO    MainThread:850 [wandb_watch.py:watch():40] Watching
++2021-07-09 02:59:55,957 INFO    MainThread:850 [wandb_run.py:_atexit_cleanup():1593] got exitcode: 1
++2021-07-09 02:59:55,958 INFO    MainThread:850 [wandb_run.py:_restore():1565] restore
++2021-07-09 02:59:58,097 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 2
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 52491
++  total_bytes: 52491
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:58,209 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 2
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 52491
++  total_bytes: 52491
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:58,805 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 52491
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:58,907 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 52852
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,009 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,110 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,212 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,313 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,436 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 02:59:59,537 INFO    MainThread:850 [wandb_run.py:_wait_for_finish():1715] got exit ret: done: true
++exit_result {
++}
++file_counts {
++  wandb_count: 6
++  other_count: 2
++}
++pusher_stats {
++  uploaded_bytes: 60458
++  total_bytes: 60458
++  deduped_bytes: 2255
++}
++
++2021-07-09 03:00:00,815 INFO    MainThread:850 [wandb_run.py:_show_files():1937] logging synced files
+diff --git a/wandb/run-20210709_025950-17nxirjr/run-17nxirjr.wandb b/wandb/run-20210709_025950-17nxirjr/run-17nxirjr.wandb
+new file mode 100644
+index 0000000..ef1d015
+Binary files /dev/null and b/wandb/run-20210709_025950-17nxirjr/run-17nxirjr.wandb differ

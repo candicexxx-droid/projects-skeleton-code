@@ -121,7 +121,7 @@ def validate(network, epoch, criterion, testloader, deivce):
 
     return loss_valid, acc_valid
 
-def starting_train(train_loader, valid_loader, training_date, test, network, device,num_epochs = 100):
+def starting_train(train_loader, valid_loader, training_date, test, network, device, num_epochs = 100):
   if test: 
     trainset_size = 3000
     
