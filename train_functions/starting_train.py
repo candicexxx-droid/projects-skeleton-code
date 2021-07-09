@@ -81,7 +81,7 @@ def train(network, epoch, criterion, optimizer, trainloader):
 
     return loss_train, acc_train  
         
-def validate(network, epoch, criterion, testloader): 
+def validate(network, epoch, criterion, optimizer, testloader): 
     loss_valid = 0
     acc_valid = 0  
     cor_valid = 0     
@@ -155,7 +155,7 @@ def starting_train(train_loader, valid_loader, training_date, test, network, num
     #do not evalulate the model per epoch 
     #Evaluate and save every 3 epoch 
     if epoch % 2 ==0: 
-      loss_valid, acc_valid = validate(network, epoch, criterion, valid_loader)
+      loss_valid, acc_valid = validate(network, epoch, criterion, optimizer, valid_loader)
       print('Epoch: {}  Train Loss: {:.4f}  Train Acc: {:.4f}  Valid Loss: {:.4f}  Valid Acc: {:.4f}'.format(epoch, loss_train, acc_train, loss_valid, acc_valid))
       wandb.log({
         "Epoch": epoch,
