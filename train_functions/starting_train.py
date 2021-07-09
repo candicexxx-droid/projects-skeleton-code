@@ -122,7 +122,7 @@ def validate(network, epoch, criterion, optimizer, testloader):
 
     return loss_valid, acc_valid
 # network, epoch, criterion, optimizer, trainloader, deivce
-def starting_train(train_loader, valid_loader, training_date, test, network, num_epochs = 100):
+def starting_train(train_loader, valid_loader, training_date, test, network,lr, num_epochs = 100):
   if test: 
     trainset_size = 3000
     
@@ -136,7 +136,7 @@ def starting_train(train_loader, valid_loader, training_date, test, network, num
             entity='candicecai26')
   
   # WandB Configurations (optional)        
-  wandb.config.lr = 0.01    
+  wandb.config.lr = lr    
 
   #network = CNN().to(device) #model initialization 
   criterion = nn.CrossEntropyLoss()

@@ -1,0 +1,721 @@
+2021-07-09 03:57:32,987 INFO    MainThread:2280 [internal.py:wandb_internal():91] W&B internal server running at pid: 2280, started at: 2021-07-09 03:57:32.986748
+2021-07-09 03:57:32,989 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: check_version
+2021-07-09 03:57:32,989 INFO    WriterThread:2280 [datastore.py:open_for_write():80] open: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/run-uap4byg0.wandb
+2021-07-09 03:57:32,990 DEBUG   SenderThread:2280 [sender.py:send():179] send: header
+2021-07-09 03:57:32,990 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: check_version
+2021-07-09 03:57:33,019 DEBUG   SenderThread:2280 [sender.py:send():179] send: run
+2021-07-09 03:57:33,112 INFO    SenderThread:2280 [dir_watcher.py:__init__():168] watching files in: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files
+2021-07-09 03:57:33,112 INFO    SenderThread:2280 [sender.py:_start_run_threads():719] run started: uap4byg0 with start time 1625803052
+2021-07-09 03:57:33,112 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:57:33,113 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:57:33,115 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: run_start
+2021-07-09 03:57:34,115 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:57:34,322 DEBUG   HandlerThread:2280 [meta.py:__init__():39] meta init
+2021-07-09 03:57:34,322 DEBUG   HandlerThread:2280 [meta.py:__init__():53] meta init done
+2021-07-09 03:57:34,322 DEBUG   HandlerThread:2280 [meta.py:probe():210] probe
+2021-07-09 03:57:34,328 DEBUG   HandlerThread:2280 [meta.py:_setup_git():200] setup git
+2021-07-09 03:57:34,350 DEBUG   HandlerThread:2280 [meta.py:_setup_git():207] setup git done
+2021-07-09 03:57:34,350 DEBUG   HandlerThread:2280 [meta.py:_save_code():89] save code
+2021-07-09 03:57:34,357 DEBUG   HandlerThread:2280 [meta.py:_save_code():110] save code done
+2021-07-09 03:57:34,357 DEBUG   HandlerThread:2280 [meta.py:_save_patches():127] save patches
+2021-07-09 03:57:34,523 DEBUG   HandlerThread:2280 [meta.py:_save_patches():169] save patches done
+2021-07-09 03:57:34,523 DEBUG   HandlerThread:2280 [meta.py:_save_pip():57] save pip
+2021-07-09 03:57:34,524 DEBUG   HandlerThread:2280 [meta.py:_save_pip():71] save pip done
+2021-07-09 03:57:34,524 DEBUG   HandlerThread:2280 [meta.py:probe():252] probe done
+2021-07-09 03:57:34,529 DEBUG   SenderThread:2280 [sender.py:send():179] send: files
+2021-07-09 03:57:34,529 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-metadata.json with policy now
+2021-07-09 03:57:34,530 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file code/main.py with policy now
+2021-07-09 03:57:34,531 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file diff.patch with policy now
+2021-07-09 03:57:34,532 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch with policy now
+2021-07-09 03:57:34,533 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:57:34,534 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:57:34,610 DEBUG   SenderThread:2280 [sender.py:send():179] send: config
+2021-07-09 03:57:34,664 INFO    Thread-12 :2280 [upload_job.py:push():117] Skipped uploading /tmp/tmp2tv1z15qwandb/238m3t3q-code/main.py
+2021-07-09 03:57:34,851 INFO    Thread-11 :2280 [upload_job.py:push():137] Uploaded file /tmp/tmp2tv1z15qwandb/14fjmpu6-wandb-metadata.json
+2021-07-09 03:57:34,902 INFO    Thread-13 :2280 [upload_job.py:push():137] Uploaded file /tmp/tmp2tv1z15qwandb/3e97r9hc-diff.patch
+2021-07-09 03:57:35,114 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/code/main.py
+2021-07-09 03:57:35,115 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 03:57:35,115 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-metadata.json
+2021-07-09 03:57:35,115 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:57:35,116 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/requirements.txt
+2021-07-09 03:57:35,116 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/diff.patch
+2021-07-09 03:57:35,116 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/code
+2021-07-09 03:57:35,193 INFO    Thread-14 :2280 [upload_job.py:push():137] Uploaded file /tmp/tmp2tv1z15qwandb/pacqwgrw-upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 03:57:37,115 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:57:38,300 DEBUG   SenderThread:2280 [sender.py:send():179] send: files
+2021-07-09 03:57:38,300 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file media/graph/graph_0_summary_731aa31abfc0045b71cb.graph.json with policy now
+2021-07-09 03:57:38,301 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:57:38,306 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:57:38,310 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:57:38,310 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:57:38,311 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:57:38,570 INFO    Thread-15 :2280 [upload_job.py:push():137] Uploaded file /tmp/tmp2tv1z15qwandb/8bir4toq-media/graph/graph_0_summary_731aa31abfc0045b71cb.graph.json
+2021-07-09 03:57:39,117 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:57:39,117 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:57:39,118 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/media/graph/graph_0_summary_731aa31abfc0045b71cb.graph.json
+2021-07-09 03:57:39,118 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/media/graph
+2021-07-09 03:57:39,118 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/media
+2021-07-09 03:57:49,611 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:57:49,612 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:57:58,074 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:57:58,074 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:57:58,076 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:57:58,128 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:57:59,129 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:58:02,523 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 03:58:04,132 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/config.yaml
+2021-07-09 03:58:04,670 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:58:04,671 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:58:18,018 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:58:18,018 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:58:18,019 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:58:18,140 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:58:19,140 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:58:19,737 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:58:19,737 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:58:32,699 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 03:58:34,800 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:58:34,801 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:58:38,243 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:58:38,244 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:58:38,244 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:58:39,152 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:58:39,152 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:58:49,872 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:58:49,872 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:58:58,293 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:58:58,293 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:58:58,294 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:58:59,162 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:58:59,162 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:59:02,860 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 03:59:04,931 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:59:04,931 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:59:10,309 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:59:10,309 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:59:10,311 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:59:11,169 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:59:11,169 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:59:14,344 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:59:14,344 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:59:14,345 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:59:15,171 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:59:15,171 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:59:19,990 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:59:19,990 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:59:33,024 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 03:59:34,408 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:59:34,408 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:59:34,409 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:59:35,052 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:59:35,052 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:59:35,182 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:59:35,182 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 03:59:50,114 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:59:50,115 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:59:54,335 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 03:59:54,335 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 03:59:54,338 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:59:55,192 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 03:59:55,193 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:00:03,202 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:00:05,174 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:00:05,175 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:00:14,235 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:00:14,235 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:00:14,236 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:00:15,208 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:00:15,209 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:00:20,233 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:00:20,234 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:00:33,406 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:00:34,296 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:00:34,296 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:00:34,297 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:00:35,219 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:00:35,219 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:00:35,298 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:00:35,298 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:00:50,339 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:00:50,340 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:00:50,342 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:00:50,356 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:00:50,356 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:00:51,227 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:03,569 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:01:05,420 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:01:05,420 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:01:10,331 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:01:10,332 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:01:10,332 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:01:11,238 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:18,181 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:01:18,182 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:01:18,183 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:01:18,242 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:18,360 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:01:18,360 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:01:18,361 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:01:19,243 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:01:19,243 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:20,478 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:01:20,478 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:01:22,364 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:01:22,365 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:01:22,365 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:01:23,245 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:01:23,245 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:33,730 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:01:35,548 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:01:35,548 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:01:42,392 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:01:42,392 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:01:42,393 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:01:43,256 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:01:43,256 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:01:50,608 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:01:50,609 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:02:02,414 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:02:02,415 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:02:02,417 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:02:03,267 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:02:03,267 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:02:03,926 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:02:05,756 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:02:05,757 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:02:20,815 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:02:20,815 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:02:22,539 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:02:22,540 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:02:22,540 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:02:23,277 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:02:23,278 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:02:34,096 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:02:35,882 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:02:35,883 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:02:42,596 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:02:42,596 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:02:42,596 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:02:43,292 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:02:43,293 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:02:50,949 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:02:50,949 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:02:54,609 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:02:54,610 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:02:54,612 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:02:55,300 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:02:55,300 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:02:58,611 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:02:58,611 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:02:58,612 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:02:59,302 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:02:59,302 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:03:04,276 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:03:06,011 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:03:06,011 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:03:18,673 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:03:18,674 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:03:18,674 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:03:19,313 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:03:19,313 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:03:21,074 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:03:21,074 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:03:34,482 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:03:36,300 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:03:36,300 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:03:38,852 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:03:38,852 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:03:38,852 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:03:39,325 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:03:40,326 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:03:51,378 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:03:51,378 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:03:59,015 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:03:59,015 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:03:59,016 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:03:59,338 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:04:00,339 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:04:04,654 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:04:06,440 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:04:06,440 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:04:19,025 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:04:19,026 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:04:19,026 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:04:19,350 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:04:20,351 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:04:21,628 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:04:21,628 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:04:34,823 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:04:35,039 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:04:35,039 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:04:35,040 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:04:35,361 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:04:36,721 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:04:36,722 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:04:51,790 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:04:51,790 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:04:54,875 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:04:54,875 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:04:54,876 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:04:55,376 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:05:02,829 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:05:02,830 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:05:02,830 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:05:03,000 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:05:03,001 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:05:03,001 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:05:03,380 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:05:04,381 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:05:04,994 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:05:06,851 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:05:06,851 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:05:07,045 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:05:07,045 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:05:07,046 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:05:07,383 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:05:08,383 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:05:21,911 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:05:21,911 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:05:27,092 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:05:27,092 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:05:27,093 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:05:27,394 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:05:28,395 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:05:35,201 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:05:36,973 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:05:36,973 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:05:47,058 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:05:47,058 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:05:47,059 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:05:47,406 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:05:48,407 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:05:52,036 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:05:52,036 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:06:05,417 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:06:06,983 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:06:06,984 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:06:06,984 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:06:07,100 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:06:07,100 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:06:07,422 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:06:08,422 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:06:22,163 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:06:22,164 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:06:26,871 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:06:26,871 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:06:26,872 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:06:27,432 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:06:28,433 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:06:35,602 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:06:37,253 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:06:37,254 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:06:38,889 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:06:38,889 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:06:38,890 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:06:39,439 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:06:40,440 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:06:42,850 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:06:42,850 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:06:42,851 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:06:43,442 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:06:44,442 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:06:52,454 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:06:52,455 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:07:02,796 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:07:02,796 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:07:02,797 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:07:03,454 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:07:04,454 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:07:05,775 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:07:07,516 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:07:07,516 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:07:22,576 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:07:22,576 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:07:22,712 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:07:22,712 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:07:22,713 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:07:23,468 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:07:24,469 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:07:35,941 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:07:37,638 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:07:37,639 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:07:42,704 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:07:42,704 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:07:42,705 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:07:43,479 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:07:44,480 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:07:52,694 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:07:52,694 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:08:02,802 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:02,802 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:02,803 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:03,491 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:08:04,491 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:08:06,138 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:08:07,760 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:08:07,761 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:08:19,047 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:19,048 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:19,048 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:19,500 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:08:22,828 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:08:22,828 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:08:36,325 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:08:37,884 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:08:37,884 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:08:39,053 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:39,054 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:39,054 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:39,514 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:08:47,013 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:47,013 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:47,014 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:47,206 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:47,206 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:47,207 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:47,524 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:08:48,525 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:08:51,236 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:08:51,236 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:08:51,237 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:08:51,527 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:08:52,527 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:08:52,940 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:08:52,941 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:09:06,515 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:09:08,001 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:09:08,001 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:09:11,234 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:09:11,234 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:09:11,241 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:09:11,552 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:09:12,553 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:09:23,064 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:09:23,064 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:09:31,274 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:09:31,275 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:09:31,275 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:09:31,565 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:09:32,565 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:09:36,704 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:09:38,126 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:09:38,127 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:09:51,176 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:09:51,177 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:09:51,177 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:09:51,577 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:09:52,577 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:09:53,186 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:09:53,186 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:10:06,912 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:10:08,281 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:10:08,281 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:10:11,117 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:10:11,117 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:10:11,118 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:10:11,588 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:10:12,589 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:10:23,042 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:10:23,042 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:10:23,043 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:10:23,345 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:10:23,346 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:10:23,595 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:10:24,595 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:10:27,091 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:10:27,091 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:10:27,092 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:10:27,597 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:10:28,598 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:10:37,070 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:10:38,406 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:10:38,406 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:10:47,087 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:10:47,087 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:10:47,087 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:10:47,608 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:10:48,608 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:10:53,466 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:10:53,466 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:11:07,086 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:11:07,086 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:11:07,089 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:11:07,250 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:11:07,619 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:11:08,619 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:11:08,638 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:11:08,638 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:11:23,722 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:11:23,722 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:11:27,039 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:11:27,039 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:11:27,040 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:11:27,630 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:11:28,630 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:11:37,412 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:11:38,815 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:11:38,815 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:11:46,930 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:11:46,931 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:11:46,931 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:11:47,641 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:11:48,642 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:11:53,873 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:11:53,873 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:12:02,899 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:02,899 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:02,900 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:03,650 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:12:07,598 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:12:08,933 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:12:08,934 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:12:22,610 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:22,610 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:22,611 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:22,660 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:12:23,998 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:12:23,998 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:12:30,464 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:30,465 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:30,465 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:30,631 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:30,631 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:30,632 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:30,665 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:12:32,666 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:12:34,626 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:34,626 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:34,627 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:34,667 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:12:36,668 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:12:37,764 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:12:39,065 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:12:39,065 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:12:54,143 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:12:54,143 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:12:54,894 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:12:54,895 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:12:54,895 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:12:55,679 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:12:56,679 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:13:07,934 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:13:09,205 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:13:09,206 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:13:15,108 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:13:15,108 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:13:15,109 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:13:15,690 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:13:16,691 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:13:24,277 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:13:24,277 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:13:35,153 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:13:35,153 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:13:35,154 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:13:35,701 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:13:36,702 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:13:38,119 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:13:39,361 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:13:39,361 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:13:54,427 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:13:54,427 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:13:55,147 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:13:55,147 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:13:55,148 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:13:55,712 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:13:56,713 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:14:07,120 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:14:07,120 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:14:07,121 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:14:07,719 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:14:08,286 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:14:08,720 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:14:09,486 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:14:09,487 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:14:11,122 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:14:11,123 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:14:11,123 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:14:11,721 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:14:12,722 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:14:24,683 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:14:24,683 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:14:31,159 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:14:31,160 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:14:31,160 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:14:31,733 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:14:32,734 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:14:38,448 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:14:39,777 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:14:39,777 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:14:51,216 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:14:51,217 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:14:51,217 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:14:51,745 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:14:52,746 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:14:54,838 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:14:54,838 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:15:08,626 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:15:10,049 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:15:10,050 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:15:11,488 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:15:11,488 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:15:11,489 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:15:11,757 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:15:12,757 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:15:25,115 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:15:25,115 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:15:31,690 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:15:31,690 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:15:31,691 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:15:31,773 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:15:32,773 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:15:38,805 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:15:40,175 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:15:40,175 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:15:47,557 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:15:47,557 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:15:47,558 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:15:47,781 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:15:55,236 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:15:55,236 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:16:07,665 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:16:07,665 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:16:07,666 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:16:07,792 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:16:08,973 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:16:10,311 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:16:10,311 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:16:15,521 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:16:15,521 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:16:15,522 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:16:15,687 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:16:15,687 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:16:15,688 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:16:15,796 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:16:16,797 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:16:19,720 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:16:19,720 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:16:19,721 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:16:19,801 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:16:20,801 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:16:25,377 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:16:25,378 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:16:39,159 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:16:39,938 DEBUG   SenderThread:2280 [sender.py:send():179] send: history
+2021-07-09 04:16:39,938 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:16:39,939 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:16:40,438 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:16:40,438 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:16:40,816 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:16:40,817 INFO    Thread-8  :2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:16:55,498 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 04:16:55,499 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 04:16:58,316 WARNING MainThread:2280 [internal.py:wandb_internal():147] Internal process interrupt: 1
+2021-07-09 04:17:00,956 DEBUG   SenderThread:2280 [sender.py:send():179] send: telemetry
+2021-07-09 04:17:00,956 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:00,956 DEBUG   SenderThread:2280 [sender.py:send():179] send: exit
+2021-07-09 04:17:00,956 INFO    SenderThread:2280 [sender.py:send_exit():287] handling exit code: 255
+2021-07-09 04:17:00,957 INFO    SenderThread:2280 [sender.py:send_exit():295] send defer
+2021-07-09 04:17:00,957 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:00,957 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:00,957 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 0
+2021-07-09 04:17:00,958 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:00,958 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 0
+2021-07-09 04:17:00,958 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 1
+2021-07-09 04:17:00,959 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:00,959 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 1
+2021-07-09 04:17:00,983 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:00,983 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 1
+2021-07-09 04:17:00,983 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 2
+2021-07-09 04:17:00,983 DEBUG   SenderThread:2280 [sender.py:send():179] send: stats
+2021-07-09 04:17:00,984 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:00,984 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 2
+2021-07-09 04:17:00,984 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:00,984 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 2
+2021-07-09 04:17:00,984 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 3
+2021-07-09 04:17:00,984 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:00,984 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 3
+2021-07-09 04:17:00,985 DEBUG   SenderThread:2280 [sender.py:send():179] send: summary
+2021-07-09 04:17:00,985 INFO    SenderThread:2280 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 04:17:00,985 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:00,985 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 3
+2021-07-09 04:17:00,985 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 4
+2021-07-09 04:17:00,986 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:00,986 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 4
+2021-07-09 04:17:00,986 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:00,986 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 4
+2021-07-09 04:17:01,059 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 5
+2021-07-09 04:17:01,059 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:01,059 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:01,060 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:01,060 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 5
+2021-07-09 04:17:01,060 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:01,060 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 5
+2021-07-09 04:17:01,060 INFO    SenderThread:2280 [dir_watcher.py:finish():282] shutting down directory watcher
+2021-07-09 04:17:01,161 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:01,821 INFO    SenderThread:2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/config.yaml
+2021-07-09 04:17:01,822 INFO    SenderThread:2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:17:01,822 INFO    SenderThread:2280 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:17:01,822 INFO    SenderThread:2280 [dir_watcher.py:finish():312] scan: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files
+2021-07-09 04:17:01,822 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/config.yaml config.yaml
+2021-07-09 04:17:01,822 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-metadata.json wandb-metadata.json
+2021-07-09 04:17:01,823 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/requirements.txt requirements.txt
+2021-07-09 04:17:01,823 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log output.log
+2021-07-09 04:17:01,828 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json wandb-summary.json
+2021-07-09 04:17:01,828 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/diff.patch diff.patch
+2021-07-09 04:17:01,828 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 04:17:01,829 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/code/main.py code/main.py
+2021-07-09 04:17:01,829 INFO    SenderThread:2280 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/media/graph/graph_0_summary_731aa31abfc0045b71cb.graph.json media/graph/graph_0_summary_731aa31abfc0045b71cb.graph.json
+2021-07-09 04:17:01,829 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 6
+2021-07-09 04:17:01,829 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:01,833 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:01,836 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 6
+2021-07-09 04:17:01,841 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:01,841 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 6
+2021-07-09 04:17:01,841 INFO    SenderThread:2280 [file_pusher.py:finish():177] shutting down file pusher
+2021-07-09 04:17:01,931 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:01,931 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,033 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,033 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,102 INFO    Thread-17 :2280 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/requirements.txt
+2021-07-09 04:17:02,103 INFO    Thread-18 :2280 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/output.log
+2021-07-09 04:17:02,134 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,135 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,141 INFO    Thread-16 :2280 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/config.yaml
+2021-07-09 04:17:02,236 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,236 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,240 INFO    Thread-19 :2280 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/files/wandb-summary.json
+2021-07-09 04:17:02,338 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,338 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,439 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,440 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,440 INFO    Thread-7  :2280 [sender.py:transition_state():308] send defer: 7
+2021-07-09 04:17:02,441 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:02,441 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 7
+2021-07-09 04:17:02,441 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:02,441 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 7
+2021-07-09 04:17:02,541 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,556 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 8
+2021-07-09 04:17:02,556 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,556 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:02,556 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 8
+2021-07-09 04:17:02,557 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:02,557 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 8
+2021-07-09 04:17:02,557 INFO    SenderThread:2280 [sender.py:transition_state():308] send defer: 9
+2021-07-09 04:17:02,557 DEBUG   SenderThread:2280 [sender.py:send():179] send: final
+2021-07-09 04:17:02,558 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 04:17:02,558 INFO    HandlerThread:2280 [handler.py:handle_request_defer():141] handle defer: 9
+2021-07-09 04:17:02,558 DEBUG   SenderThread:2280 [sender.py:send():179] send: footer
+2021-07-09 04:17:02,558 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: defer
+2021-07-09 04:17:02,558 INFO    SenderThread:2280 [sender.py:send_request_defer():304] handle sender defer: 9
+2021-07-09 04:17:02,658 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 04:17:02,658 DEBUG   SenderThread:2280 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 04:17:02,658 INFO    SenderThread:2280 [file_pusher.py:join():182] waiting for file pusher
+2021-07-09 04:17:02,659 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: get_summary
+2021-07-09 04:17:02,660 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: sampled_history
+2021-07-09 04:17:02,662 DEBUG   HandlerThread:2280 [handler.py:handle_request():124] handle_request: shutdown
+2021-07-09 04:17:02,662 INFO    HandlerThread:2280 [handler.py:finish():638] shutting down handler
+2021-07-09 04:17:03,558 INFO    WriterThread:2280 [datastore.py:close():288] close: /content/projects-skeleton-code/wandb/run-20210709_035732-uap4byg0/run-uap4byg0.wandb
+2021-07-09 04:17:03,658 INFO    SenderThread:2280 [sender.py:finish():945] shutting down sender
+2021-07-09 04:17:03,659 INFO    SenderThread:2280 [file_pusher.py:finish():177] shutting down file pusher
+2021-07-09 04:17:03,659 INFO    SenderThread:2280 [file_pusher.py:join():182] waiting for file pusher
+2021-07-09 04:17:03,661 INFO    MainThread:2280 [internal.py:handle_exit():78] Internal process exited

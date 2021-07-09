@@ -44,6 +44,7 @@ def main(config):
         train_loader=train_loader,
         valid_loader=valid_loader,
         network=model,
+        lr = config['lr'],
         test = config['test'], 
         training_date = config['train_date'],
         num_epochs=config['epochs'],
