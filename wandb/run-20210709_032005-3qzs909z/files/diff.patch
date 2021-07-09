@@ -1,0 +1,40 @@
+diff --git a/train_functions/starting_train.py b/train_functions/starting_train.py
+index 4e7a4e5..b5da3c1 100644
+--- a/train_functions/starting_train.py
++++ b/train_functions/starting_train.py
+@@ -27,7 +27,7 @@ def train(network, epoch, criterion, optimizer, trainloader, deivce):
+     acc_train = 0
+     network.train()
+     #epoch_no=epoch_no
+-    
++    print('device: ', device)
+     for step in range(len(trainloader)): #go thru each images in one epoch
+ 
+         images , labels = next(iter(trainloader))
+diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
+index e57bbd6..175676c 120000
+--- a/wandb/debug-internal.log
++++ b/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh/logs/debug-internal.log
+\ No newline at end of file
++run-20210709_032005-3qzs909z/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+index 78751a6..0cd778c 120000
+--- a/wandb/debug.log
++++ b/wandb/debug.log
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh/logs/debug.log
+\ No newline at end of file
++run-20210709_032005-3qzs909z/logs/debug.log
+\ No newline at end of file
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 3fdc850..688453e 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh
+\ No newline at end of file
++run-20210709_032005-3qzs909z
+\ No newline at end of file

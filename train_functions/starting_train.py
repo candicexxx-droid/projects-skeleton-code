@@ -27,7 +27,8 @@ def train(network, epoch, criterion, optimizer, trainloader, deivce):
     acc_train = 0
     network.train()
     #epoch_no=epoch_no
-    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print('device at starting_train: ', device)
     for step in range(len(trainloader)): #go thru each images in one epoch
 
         images , labels = next(iter(trainloader))
@@ -85,7 +86,7 @@ def validate(network, epoch, criterion, testloader, deivce):
     acc_valid = 0  
     cor_valid = 0     
     network.eval()  
-
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     for step in range(len(testloader)):
 
         images , labels = next(iter(testloader))

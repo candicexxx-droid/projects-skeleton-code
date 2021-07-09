@@ -1,0 +1,149 @@
+2021-07-09 03:21:29,349 INFO    MainThread:1485 [internal.py:wandb_internal():91] W&B internal server running at pid: 1485, started at: 2021-07-09 03:21:29.349212
+2021-07-09 03:21:29,351 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: check_version
+2021-07-09 03:21:29,352 INFO    WriterThread:1485 [datastore.py:open_for_write():80] open: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/run-3851jazp.wandb
+2021-07-09 03:21:29,352 DEBUG   SenderThread:1485 [sender.py:send():179] send: header
+2021-07-09 03:21:29,352 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: check_version
+2021-07-09 03:21:29,381 DEBUG   SenderThread:1485 [sender.py:send():179] send: run
+2021-07-09 03:21:29,481 INFO    SenderThread:1485 [dir_watcher.py:__init__():168] watching files in: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files
+2021-07-09 03:21:29,481 INFO    SenderThread:1485 [sender.py:_start_run_threads():719] run started: 3851jazp with start time 1625800888
+2021-07-09 03:21:29,481 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: run_start
+2021-07-09 03:21:29,481 DEBUG   SenderThread:1485 [sender.py:send():179] send: summary
+2021-07-09 03:21:29,482 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:21:30,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-summary.json
+2021-07-09 03:21:30,692 DEBUG   HandlerThread:1485 [meta.py:__init__():39] meta init
+2021-07-09 03:21:30,692 DEBUG   HandlerThread:1485 [meta.py:__init__():53] meta init done
+2021-07-09 03:21:30,692 DEBUG   HandlerThread:1485 [meta.py:probe():210] probe
+2021-07-09 03:21:30,698 DEBUG   HandlerThread:1485 [meta.py:_setup_git():200] setup git
+2021-07-09 03:21:30,721 DEBUG   HandlerThread:1485 [meta.py:_setup_git():207] setup git done
+2021-07-09 03:21:30,721 DEBUG   HandlerThread:1485 [meta.py:_save_code():89] save code
+2021-07-09 03:21:30,729 DEBUG   HandlerThread:1485 [meta.py:_save_code():110] save code done
+2021-07-09 03:21:30,729 DEBUG   HandlerThread:1485 [meta.py:_save_patches():127] save patches
+2021-07-09 03:21:30,796 DEBUG   HandlerThread:1485 [meta.py:_save_patches():169] save patches done
+2021-07-09 03:21:30,796 DEBUG   HandlerThread:1485 [meta.py:_save_pip():57] save pip
+2021-07-09 03:21:30,797 DEBUG   HandlerThread:1485 [meta.py:_save_pip():71] save pip done
+2021-07-09 03:21:30,797 DEBUG   HandlerThread:1485 [meta.py:probe():252] probe done
+2021-07-09 03:21:30,800 DEBUG   SenderThread:1485 [sender.py:send():179] send: files
+2021-07-09 03:21:30,800 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file wandb-metadata.json with policy now
+2021-07-09 03:21:30,801 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file code/main.py with policy now
+2021-07-09 03:21:30,801 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file diff.patch with policy now
+2021-07-09 03:21:30,801 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch with policy now
+2021-07-09 03:21:30,804 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: stop_status
+2021-07-09 03:21:30,804 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: stop_status
+2021-07-09 03:21:30,884 DEBUG   SenderThread:1485 [sender.py:send():179] send: config
+2021-07-09 03:21:30,890 INFO    Thread-12 :1485 [upload_job.py:push():117] Skipped uploading /tmp/tmpq2cy0udswandb/3w1kg3un-code/main.py
+2021-07-09 03:21:31,177 INFO    Thread-13 :1485 [upload_job.py:push():137] Uploaded file /tmp/tmpq2cy0udswandb/1no6mbw9-diff.patch
+2021-07-09 03:21:31,181 INFO    Thread-11 :1485 [upload_job.py:push():137] Uploaded file /tmp/tmpq2cy0udswandb/2g5rphdp-wandb-metadata.json
+2021-07-09 03:21:31,193 INFO    Thread-14 :1485 [upload_job.py:push():137] Uploaded file /tmp/tmpq2cy0udswandb/39hbpmso-upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/code/main.py
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/diff.patch
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/output.log
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-metadata.json
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/requirements.txt
+2021-07-09 03:21:31,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_created():216] file/dir created: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/code
+2021-07-09 03:21:33,311 DEBUG   SenderThread:1485 [sender.py:send():179] send: telemetry
+2021-07-09 03:21:33,311 DEBUG   SenderThread:1485 [sender.py:send():179] send: exit
+2021-07-09 03:21:33,312 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,312 INFO    SenderThread:1485 [sender.py:send_exit():287] handling exit code: 1
+2021-07-09 03:21:33,312 INFO    SenderThread:1485 [sender.py:send_exit():295] send defer
+2021-07-09 03:21:33,312 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,313 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,313 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 0
+2021-07-09 03:21:33,313 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,313 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 0
+2021-07-09 03:21:33,313 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 1
+2021-07-09 03:21:33,314 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,314 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 1
+2021-07-09 03:21:33,327 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,327 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 1
+2021-07-09 03:21:33,327 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 2
+2021-07-09 03:21:33,328 DEBUG   SenderThread:1485 [sender.py:send():179] send: stats
+2021-07-09 03:21:33,328 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,328 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 2
+2021-07-09 03:21:33,328 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,328 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 2
+2021-07-09 03:21:33,328 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 3
+2021-07-09 03:21:33,329 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,329 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 3
+2021-07-09 03:21:33,329 DEBUG   SenderThread:1485 [sender.py:send():179] send: summary
+2021-07-09 03:21:33,329 INFO    SenderThread:1485 [sender.py:_save_file():841] saving file wandb-summary.json with policy end
+2021-07-09 03:21:33,329 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,329 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 3
+2021-07-09 03:21:33,330 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 4
+2021-07-09 03:21:33,330 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,330 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 4
+2021-07-09 03:21:33,330 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,330 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 4
+2021-07-09 03:21:33,408 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 5
+2021-07-09 03:21:33,409 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,409 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 5
+2021-07-09 03:21:33,409 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,409 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 5
+2021-07-09 03:21:33,409 INFO    SenderThread:1485 [dir_watcher.py:finish():282] shutting down directory watcher
+2021-07-09 03:21:33,414 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,483 INFO    Thread-8  :1485 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/output.log
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/config.yaml
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:_on_file_modified():229] file/dir modified: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-summary.json
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:finish():312] scan: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/config.yaml config.yaml
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-metadata.json wandb-metadata.json
+2021-07-09 03:21:33,484 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/requirements.txt requirements.txt
+2021-07-09 03:21:33,487 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/output.log output.log
+2021-07-09 03:21:33,488 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-summary.json wandb-summary.json
+2021-07-09 03:21:33,488 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/diff.patch diff.patch
+2021-07-09 03:21:33,488 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch upstream_diff_fec7ac3967b8951b98fe02dd41851c01190abf7d.patch
+2021-07-09 03:21:33,496 INFO    SenderThread:1485 [dir_watcher.py:finish():318] scan save: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/code/main.py code/main.py
+2021-07-09 03:21:33,496 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 6
+2021-07-09 03:21:33,497 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,498 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:33,498 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 6
+2021-07-09 03:21:33,500 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:33,500 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 6
+2021-07-09 03:21:33,501 INFO    SenderThread:1485 [file_pusher.py:finish():177] shutting down file pusher
+2021-07-09 03:21:33,601 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,601 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,703 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,703 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,784 INFO    Thread-15 :1485 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/config.yaml
+2021-07-09 03:21:33,786 INFO    Thread-18 :1485 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/wandb-summary.json
+2021-07-09 03:21:33,804 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,804 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,842 INFO    Thread-16 :1485 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/requirements.txt
+2021-07-09 03:21:33,905 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:33,906 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:33,935 INFO    Thread-17 :1485 [upload_job.py:push():137] Uploaded file /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/files/output.log
+2021-07-09 03:21:34,007 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:34,007 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:34,108 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:34,109 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:34,135 INFO    Thread-7  :1485 [sender.py:transition_state():308] send defer: 7
+2021-07-09 03:21:34,136 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:34,136 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 7
+2021-07-09 03:21:34,136 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:34,136 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 7
+2021-07-09 03:21:34,210 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:34,244 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 8
+2021-07-09 03:21:34,245 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:34,245 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:34,245 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 8
+2021-07-09 03:21:34,245 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:34,246 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 8
+2021-07-09 03:21:34,246 INFO    SenderThread:1485 [sender.py:transition_state():308] send defer: 9
+2021-07-09 03:21:34,246 DEBUG   SenderThread:1485 [sender.py:send():179] send: final
+2021-07-09 03:21:34,247 DEBUG   SenderThread:1485 [sender.py:send():179] send: footer
+2021-07-09 03:21:34,247 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: defer
+2021-07-09 03:21:34,247 INFO    HandlerThread:1485 [handler.py:handle_request_defer():141] handle defer: 9
+2021-07-09 03:21:34,247 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: defer
+2021-07-09 03:21:34,247 INFO    SenderThread:1485 [sender.py:send_request_defer():304] handle sender defer: 9
+2021-07-09 03:21:34,346 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: poll_exit
+2021-07-09 03:21:34,346 DEBUG   SenderThread:1485 [sender.py:send_request():193] send_request: poll_exit
+2021-07-09 03:21:34,347 INFO    SenderThread:1485 [file_pusher.py:join():182] waiting for file pusher
+2021-07-09 03:21:34,348 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: get_summary
+2021-07-09 03:21:34,348 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: sampled_history
+2021-07-09 03:21:34,349 DEBUG   HandlerThread:1485 [handler.py:handle_request():124] handle_request: shutdown
+2021-07-09 03:21:34,349 INFO    HandlerThread:1485 [handler.py:finish():638] shutting down handler
+2021-07-09 03:21:35,247 INFO    WriterThread:1485 [datastore.py:close():288] close: /content/projects-skeleton-code/wandb/run-20210709_032128-3851jazp/run-3851jazp.wandb
+2021-07-09 03:21:35,347 INFO    SenderThread:1485 [sender.py:finish():945] shutting down sender
+2021-07-09 03:21:35,347 INFO    SenderThread:1485 [file_pusher.py:finish():177] shutting down file pusher
+2021-07-09 03:21:35,347 INFO    SenderThread:1485 [file_pusher.py:join():182] waiting for file pusher
+2021-07-09 03:21:35,349 INFO    MainThread:1485 [internal.py:handle_exit():78] Internal process exited

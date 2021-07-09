@@ -1,0 +1,26 @@
+{
+    "os": "Linux-5.4.104+-x86_64-with-Ubuntu-18.04-bionic",
+    "python": "3.7.10",
+    "heartbeatAt": "2021-07-09T03:20:07.761414",
+    "startedAt": "2021-07-09T03:20:05.638657",
+    "docker": null,
+    "gpu": "Tesla T4",
+    "gpu_count": 1,
+    "cpu_count": 2,
+    "cuda": "11.0.228",
+    "args": [
+        "config"
+    ],
+    "state": "running",
+    "program": "main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "https://github.com/candicexxx-droid/projects-skeleton-code.git",
+        "commit": "b2309c388b6aa701485a7ccb0ef7a3cac0fe13de"
+    },
+    "email": "caixy.candice2016@outlook.com",
+    "root": "/content/projects-skeleton-code",
+    "host": "7222cdb1f6d1",
+    "username": "root",
+    "executable": "/usr/bin/python3"
+}

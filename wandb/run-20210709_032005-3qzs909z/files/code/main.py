@@ -32,7 +32,7 @@ def main(config):
 
     # TODO: Add GPU support. This line of code might be helpful.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print('device at main: ', device)
+
     # print("Summary path:", summary_path)
     print("Epochs:", config['epochs'])
     print("Batch size:", config['batch_size'])

@@ -1,0 +1,53 @@
+diff --git a/main.py b/main.py
+index ac3f93f..e2868ca 100644
+--- a/main.py
++++ b/main.py
+@@ -32,7 +32,7 @@ def main(config):
+ 
+     # TODO: Add GPU support. This line of code might be helpful.
+     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+-
++    print('device at main: ', device)
+     # print("Summary path:", summary_path)
+     print("Epochs:", config['epochs'])
+     print("Batch size:", config['batch_size'])
+diff --git a/train_functions/starting_train.py b/train_functions/starting_train.py
+index 4e7a4e5..8ecf493 100644
+--- a/train_functions/starting_train.py
++++ b/train_functions/starting_train.py
+@@ -27,7 +27,7 @@ def train(network, epoch, criterion, optimizer, trainloader, deivce):
+     acc_train = 0
+     network.train()
+     #epoch_no=epoch_no
+-    
++    print('device at starting_train: ', device)
+     for step in range(len(trainloader)): #go thru each images in one epoch
+ 
+         images , labels = next(iter(trainloader))
+diff --git a/wandb/debug-internal.log b/wandb/debug-internal.log
+index e57bbd6..b63435d 120000
+--- a/wandb/debug-internal.log
++++ b/wandb/debug-internal.log
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh/logs/debug-internal.log
+\ No newline at end of file
++run-20210709_032128-3851jazp/logs/debug-internal.log
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+index 78751a6..f50f6cc 120000
+--- a/wandb/debug.log
++++ b/wandb/debug.log
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh/logs/debug.log
+\ No newline at end of file
++run-20210709_032128-3851jazp/logs/debug.log
+\ No newline at end of file
+diff --git a/wandb/latest-run b/wandb/latest-run
+index 3fdc850..db85c8a 120000
+--- a/wandb/latest-run
++++ b/wandb/latest-run
+@@ -1 +1 @@
+-run-20210709_030702-wjgj7dkh
+\ No newline at end of file
++run-20210709_032128-3851jazp
+\ No newline at end of file

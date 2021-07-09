@@ -1,0 +1,29 @@
+
+device at starting_train:  cuda
+/usr/local/lib/python3.7/dist-packages/torch/nn/functional.py:718: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  /pytorch/c10/core/TensorImpl.h:1156.)
+  return torch.max_pool2d(input, kernel_size, stride, padding, dilation, ceil_mode)
+current acc: tensor(0.0781, device='cuda:0')
+/content/projects-skeleton-code/networks/StartingNetwork.py:35: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.
+  x = F.softmax(x)
+current acc: tensor(0.5143, device='cuda:0')
+current acc: tensor(0.5526, device='cuda:0')
+current acc: tensor(0.5679, device='cuda:0')
+current acc: tensor(0.5789, device='cuda:0')
+Epoch: 1  Train Loss: 1.3102  Train Acc: 58.5612
+Time Elapsed : 86.9949s
+device at starting_train:  cuda
+current acc: tensor(0.5781, device='cuda:0')
+current acc: tensor(0.6146, device='cuda:0')
+current acc: tensor(0.6257, device='cuda:0')
+Traceback (most recent call last):
+  File "main.py", line 65, in <module>
+    main(config)
+  File "main.py", line 50, in main
+    num_epochs=config['epochs'],
+  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 152, in starting_train
+    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader, device)
+  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 52, in train
+    cor_train_step, acc_train_step = find_acc(pred, labels)
+  File "/content/projects-skeleton-code/train_functions/starting_train.py", line 19, in find_acc
+    accuracy = correct.to(torch.float32).mean().item() * 100
+KeyboardInterrupt
