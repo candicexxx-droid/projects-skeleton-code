@@ -120,7 +120,7 @@ def validate(network, epoch, criterion, testloader, deivce):
     acc_valid /= (len(testloader))
 
     return loss_valid, acc_valid
-
+# network, epoch, criterion, optimizer, trainloader, deivce
 def starting_train(train_loader, valid_loader, training_date, test, network, device, num_epochs = 100):
   if test: 
     trainset_size = 3000
@@ -148,7 +148,7 @@ def starting_train(train_loader, valid_loader, training_date, test, network, dev
   for epoch in range(1, num_epochs+1):
     
     #helper function 1
-    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader, device = device)
+    loss_train, acc_train = train(network, epoch, criterion, optimizer, train_loader, device)
     
     #Helper function 2
     #do not evalulate the model per epoch 
