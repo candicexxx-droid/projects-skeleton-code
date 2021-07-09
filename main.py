@@ -1,7 +1,7 @@
 import argparse
 
 import os
-
+import torch
 #lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
 
 import constants
@@ -10,14 +10,19 @@ from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
 from config import config
 # os.chdir('/Users/candicecai/Desktop/Sophomore-Spring-ACM-AI-Project/projects-skeleton-code')
-
+import importlib
 # SUMMARIES_PATH = "training_summaries"
-
+parser = argparse.ArgumentParser()
+parser.add_argument('config_name', default='config', help='config file. Default is config.py file.')
+args = parser.parse_args()
+# get experiment config
+config_module = importlib.import_module(args.config_name)
+config = config_module.config
 
 def main(config):
     # Get command line arguments
     # args = parse_arguments()
-    
+    #commit test
 
     # Create path for training summaries
     # summary_path = None
@@ -55,4 +60,4 @@ def main(config):
 
 
 if __name__ == "__main__":
-    main()
+    main(config)
