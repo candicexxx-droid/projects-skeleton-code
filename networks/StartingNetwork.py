@@ -46,7 +46,7 @@ class StartingNetwork(nn.Module): #changed to resnet
         super().__init__()
         self.modified_resnet = models.resnet18()
         # Freeze model weights
-        for param in model.parameters():
+        for param in self.modified_resnet.parameters():
             param.requires_grad = False
         
         print('pretrained weights fixed!')
