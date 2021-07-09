@@ -34,7 +34,7 @@ def main(config):
 
     # Initalize dataset and model. Then train the model!
     train_loader, valid_loader, test_loader= StartingDataset(batch_size=config['batch_size']) 
-    model = StartingNetwork()
+    model = StartingNetwork().to(device)
     starting_train(
         train_loader=train_loader,
         valid_loader=valid_loader,
