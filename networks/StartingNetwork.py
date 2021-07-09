@@ -15,8 +15,11 @@ class fc(torch.nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.fc1 = nn.Linear(input_dim, 512)
+        self.bn1 = nn.BatchNorm1d(512)
         self.fc2 = nn.Linear(512, 256)
+        self.bn2 = nn.BatchNorm1d(256)
         self.fc3 = nn.Linear(256, 128)
+        self.bn2 = nn.BatchNorm1d(128)
         self.fc4 = nn.Linear(128, output_dim)
         
 
